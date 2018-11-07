@@ -1,0 +1,22 @@
+[
+    {
+        "name": "BBC Radio 5 Live",
+        "url": "http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio5live_mf_p",
+        "image": "station-5-live",
+        "description": "Live news and live sport from the BBC.",
+        "city": "London",
+        "region": "",
+        "country": "United Kingdom",
+        "tags": [ "news", "sport" ]
+    },
+    {
+        "name": "TalkSPORT",
+        "streamURL": "https://radio.talksport.com/stream?awparams=platform:ts-web&aw_0_req.gdpr=true",
+        "imageURL": "station-talksport",
+        "description": "Live Premier League football coverage, breaking sports news, transfer rumours & exclusive interviews.",
+        "city": "London",
+        "region": "",
+        "country": "United Kingdom",
+        "tags": [ "sport" ]
+    },
+]
