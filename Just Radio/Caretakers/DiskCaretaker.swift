@@ -48,7 +48,14 @@ public final class DiskCaretaker {
         let fileManager = FileManager.default
         let url = fileManager.urls(for: .documentDirectory,
                                    in: .userDomainMask).first!
-        return url.appendingPathComponent(fileName)
+        let fileURL = url.appendingPathComponent(fileName)
             .appendingPathExtension("json")
+        
+        if !fileManager.fileExists(atPath: fileURL.path) {
+            print( "FILE DOES NOT EXIST" )
+            fileManager.createFile(atPath: fileURL.path, contents: "[]".data(using: .utf8), attributes: nil)
+        }
+        
+        return fileURL
     }
 }
