@@ -24,8 +24,8 @@ class StationTableViewCell: UITableViewCell {
         stationNameLabel.text = station.name
         stationDescLabel.text = station.description
 
-        if let url = URL(string: (station.image as NSString) as String) {
-            stationImageView.loadImageWithURL(url: url) { (image) in }
+        station.getImage { (image) in
+            self.stationImageView.image = image
         }
         
         stationImageView.layer.cornerRadius = 10

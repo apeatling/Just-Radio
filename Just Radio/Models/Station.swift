@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 public struct Station: Codable {
     var name: String
@@ -31,5 +32,46 @@ public struct Station: Codable {
         self.country = country
         
         self.tags = tags
+    }
+    
+    func getImage(completion: @escaping (_ image: UIImage?)->()) {
+        guard let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first, let fileSlug = self.url.convertedToSlug() else {
+            return
+        }
+        
+        let fileURL = documentsURL.appendingPathComponent("\(fileSlug).png")
+        let filePath = fileURL.path
+        
+        if FileManager.default.fileExists(atPath: filePath) {
+            print( "Found local image file for \(self.name)" )
+            
+            DispatchQueue.main.async {
+                completion(UIImage(contentsOfFile: filePath))
+            }
+            return
+        }
+        
+        if let url = URL(string: (image as NSString) as String) {
+            print( "Using remote image file for \(self.name)" )
+            
+            let session = URLSession.shared
+            
+            let downloadTask = session.downloadTask(with: url, completionHandler: { tempLocalUrl, response, error in
+                if let tempLocalUrl = tempLocalUrl, error == nil {
+                    do {
+                        try FileManager.default.copyItem(at: tempLocalUrl, to: fileURL)
+                        print( "Copied to \(fileURL)" )
+                        
+                        DispatchQueue.main.async {
+                            completion(UIImage(contentsOfFile: fileURL.path))
+                        }
+                    } catch (let writeError) {
+                        print("Error creating a file \(fileURL) : \(writeError)")
+                    }
+                }
+            })
+            
+            downloadTask.resume()
+        }
     }
 }

@@ -222,9 +222,17 @@ open class FRadioPlayer: NSObject {
     private override init() {
         super.init()
         
-        // Enable bluetooth playback
         let audioSession = AVAudioSession.sharedInstance()
-        try? audioSession.setCategory(AVAudioSession.Category.playback, mode: AVAudioSession.Mode.default, options: [.defaultToSpeaker, .allowBluetooth])
+//        try? audioSession.setCategory(
+//            AVAudioSession.Category.playback,
+//            mode: AVAudioSession.Mode.default,
+//            options: [.defaultToSpeaker, .allowBluetooth, .allowAirPlay])
+        
+        try? audioSession.setCategory(AVAudioSession.Category.playback,
+              mode: AVAudioSession.Mode.default,
+              policy: AVAudioSession.RouteSharingPolicy.longForm,
+              options: [.defaultToSpeaker, .allowBluetooth, .allowAirPlay])
+        
         try? audioSession.setActive(true)
         
         // Notifications
@@ -485,14 +493,20 @@ open class FRadioPlayer: NSObject {
             let reasonValue = userInfo[AVAudioSessionRouteChangeReasonKey] as? UInt,
             let reason = AVAudioSession.RouteChangeReason(rawValue:reasonValue) else { return }
         
+        let currentRoute = AVAudioSession.sharedInstance().currentRoute
+        
         switch reason {
         case .newDeviceAvailable:
-            checkHeadphonesConnection(outputs: AVAudioSession.sharedInstance().currentRoute.outputs)
+            checkHeadphonesConnection(outputs: currentRoute.outputs)
         case .oldDeviceUnavailable:
             guard let previousRoute = userInfo[AVAudioSessionRouteChangePreviousRouteKey] as? AVAudioSessionRouteDescription else { return }
             checkHeadphonesConnection(outputs: previousRoute.outputs);
             DispatchQueue.main.async { self.headphonesConnected ? () : self.pause() }
         default: break
+        }
+        
+        for output in currentRoute.outputs {
+            print("\n*******\nDevice connected with name: \(output.portName)\n*******\n")
         }
     }
     

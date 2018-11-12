@@ -109,5 +109,16 @@ extension StationsViewController: UITableViewDelegate {
 //                               tags: ["sport"]
 //        )
 //        stations.append(talksport)
+
+//let z953 = Station(name: "Z95.3",
+//                   url: "http://newcap.leanstream.co/CKZZFM-MP3",
+//                   image: "http://cdn-radiotime-logos.tunein.com/s31305d.png",
+//                   description: "Vancouver's best mix of music.",
+//                   city: "Vancouver",
+//                   region: "BC",
+//                   country: "Canada",
+//                   tags: ["top40", "pop"]
+//)
+//stations.append(z953)
 //
 //        try? stationCaretaker.save()

@@ -17,6 +17,7 @@ protocol RadioPlayerDelegate: class {
     func playbackStateDidChange(_ playbackState: FRadioPlaybackState)
     func trackDidUpdate(_ track: Track?)
     func trackArtworkDidUpdate(_ track: Track?)
+    func rawMetadataDidChange(_ metadata: String?)
 }
 
 //*****************************************************************
@@ -88,14 +89,9 @@ class RadioPlayer {
     
     private func getStationImage(from station: Station, completionHandler: @escaping (_ image: UIImage) -> ()) {
         
-        if station.image.range(of: "http") != nil {
-            // load current station image from network
-            ImageLoader.sharedLoader.imageForUrl(urlString: station.image) { (image, stringURL) in
-                completionHandler(image ?? #imageLiteral(resourceName: "albumArt"))
-            }
-        } else {
-            // load local station image
-            let image = UIImage(named: station.image) ?? #imageLiteral(resourceName: "albumArt")
+        station.getImage { (image) in
+            guard let image = image else { return }
+            
             completionHandler(image)
         }
     }
@@ -129,5 +125,11 @@ extension RadioPlayer: FRadioPlayerDelegate {
             guard let image = image else { self.resetArtwork(with: self.station); return }
             self.updateTrackArtwork(with: image, artworkLoaded: true)
         }
+    }
+    
+    func radioPlayer(_ player: FRadioPlayer, metadataDidChange rawValue: String?) {
+        guard let rawValue = rawValue else { return }
+        
+        delegate?.rawMetadataDidChange(rawValue)
     }
 }
