@@ -17,7 +17,9 @@ class NowPlayingViewController: UIViewController {
     @IBOutlet weak var artistLabel: UILabel!
     @IBOutlet weak var playPauseButton: UIButton!
     @IBOutlet weak var volumeSlider: UISlider!
+    @IBOutlet weak var airplayStackView: UIStackView!
     @IBOutlet weak var airplayButton: UIButton!
+    @IBOutlet weak var airplayLabel: UILabel!
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var backgroundVisualEffectView: UIVisualEffectView!
     
@@ -52,18 +54,8 @@ class NowPlayingViewController: UIViewController {
         fpc.track(scrollView: stationsVC.tableView)
         
         setupRemoteCommandCenter()
-        
-        // Add airplay picker
-        let routePickerView = AVRoutePickerView(frame: airplayButton.bounds)
-            routePickerView.backgroundColor = UIColor.clear
-        
-        airplayButton.addSubview(routePickerView)
-        
-        // Detect if there are routes, to show the picker or not.
-        let routeDetector = AVRouteDetector()
-            routeDetector.isRouteDetectionEnabled = true
-        
-        print("Routes detected?", routeDetector.multipleRoutesDetected)
+        getActiveAirplayDevice()
+        setupAirplayPicker()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -87,6 +79,11 @@ class NowPlayingViewController: UIViewController {
         
         albumArtImageView.image = currentTrack.artworkImage
         backgroundImageView.image = currentTrack.artworkImage
+
+        // Set colors
+//        albumArtImageView.image?.getColors(quality: .low, { (colors) in
+//            self.artistLabel.textColor = colors.primary
+//        })
 
         updateNowPlayingInfo(artist: currentTrack.artist, title: currentTrack.title, image: currentTrack.artworkImage)
     }
@@ -131,6 +128,33 @@ class NowPlayingViewController: UIViewController {
         // Set the metadata
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
     }
+    
+    func getActiveAirplayDevice() {
+        guard let activeRoute = radioPlayer.player.getCurrentRoute() else { return }
+        self.portDidChange(portType: activeRoute.portType, portName: activeRoute.portName)
+    }
+    
+    func setupAirplayPicker() {
+        self.airplayStackView.isHidden = false
+        
+        let routeDetector = AVRouteDetector()
+            routeDetector.isRouteDetectionEnabled = true
+        
+        if !routeDetector.multipleRoutesDetected {
+           self.airplayStackView.isHidden = true
+        }
+
+        // Add airplay picker to button
+        self.airplayStackView.subviews.forEach({ if $0 is AVRoutePickerView { $0.removeFromSuperview() } })
+        self.airplayStackView.autoresizesSubviews = true
+        
+        let routePickerView = AVRoutePickerView(frame: self.airplayStackView.bounds)
+            routePickerView.tintColor = .clear
+            routePickerView.activeTintColor = .clear
+            routePickerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        self.airplayStackView.addSubview(routePickerView)
+    }
 
     // MARK: - Actions
     @IBAction func tappedPlayButton(_ sender: Any) {
@@ -153,8 +177,7 @@ extension NowPlayingViewController: StationsViewControllerDelegate {
             self.albumArtImageView.image = image
             self.backgroundImageView.image = image
         }
-        albumArtImageView.layer.cornerRadius = 24
-        
+ 
         radioPlayer.station = currentStation
         radioPlayer.player.radioURL = URL(string: currentStation.url)
         radioPlayer.player.play()
@@ -229,10 +252,36 @@ extension NowPlayingViewController: RadioPlayerDelegate {
         currentTrack = track
     }
     
+    func portDidChange(portType: AVAudioSession.Port?, portName: String?) {
+        guard let portType = portType, let portName = portName else { return }
+        
+        DispatchQueue.main.async {
+            switch portType.rawValue {
+            case "Speaker":
+                self.airplayLabel.text = ""
+                break
+            case "AirPlay":
+                self.airplayLabel.text = UIDevice.current.model + " → " + portName
+                break
+            default:
+                self.airplayLabel.text = portName
+                break
+            }
+
+            self.setupAirplayPicker()
+        }
+
+        print( "PORT DID CHANGE", portType.rawValue, portName)
+    }
+    
     func rawMetadataDidChange(_ metadata: String?) {
         guard let metadata = metadata else { return }
     }
 }
+
+//extension NowPlayingViewController: AVRoutePickerViewDelegate {
+//
+//}
 
 extension NowPlayingViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {

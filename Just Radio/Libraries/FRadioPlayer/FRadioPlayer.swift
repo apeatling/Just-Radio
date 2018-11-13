@@ -125,6 +125,9 @@ import AVFoundation
      - parameter artworkURL: URL for the artwork from iTunes
      */
     @objc optional func radioPlayer(_ player: FRadioPlayer, artworkDidChange artworkURL: URL?)
+
+    // Called when port changes (bluetooth output, airplay connected, car etc)
+    @objc optional func radioPlayer(_ player: FRadioPlayer, portDidChange portType: AVAudioSession.Port?, portName: String?)
 }
 
 // MARK: - FRadioPlayer
@@ -223,15 +226,15 @@ open class FRadioPlayer: NSObject {
         super.init()
         
         let audioSession = AVAudioSession.sharedInstance()
-//        try? audioSession.setCategory(
-//            AVAudioSession.Category.playback,
-//            mode: AVAudioSession.Mode.default,
-//            options: [.defaultToSpeaker, .allowBluetooth, .allowAirPlay])
+        try? audioSession.setCategory(
+            AVAudioSession.Category.playback,
+            mode: AVAudioSession.Mode.default,
+            options: [.allowBluetooth, .allowAirPlay, .allowBluetoothA2DP])
         
-        try? audioSession.setCategory(AVAudioSession.Category.playback,
-              mode: AVAudioSession.Mode.default,
-              policy: AVAudioSession.RouteSharingPolicy.longForm,
-              options: [.defaultToSpeaker, .allowBluetooth, .allowAirPlay])
+//        try? audioSession.setCategory(AVAudioSession.Category.playback,
+//              mode: AVAudioSession.Mode.default,
+//              policy: AVAudioSession.RouteSharingPolicy.longForm,
+//              options: [.defaultToSpeaker, .allowBluetooth, .allowAirPlay])
         
         try? audioSession.setActive(true)
         
@@ -506,8 +509,17 @@ open class FRadioPlayer: NSObject {
         }
         
         for output in currentRoute.outputs {
-            print("\n*******\nDevice connected with name: \(output.portName)\n*******\n")
+            delegate?.radioPlayer?(self, portDidChange: output.portType, portName: output.portName)
         }
+    }
+    
+    func getCurrentRoute() -> (portType: AVAudioSession.Port, portName: String)? {
+        let currentRoute = AVAudioSession.sharedInstance().currentRoute
+        for output in currentRoute.outputs {
+            return (output.portType, output.portName)
+        }
+        
+        return nil
     }
     
     // MARK: - KVO

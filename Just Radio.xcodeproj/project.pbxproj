@@ -32,6 +32,7 @@
 		BABC11712192A00500EDE169 /* FloatingPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABC11672192A00500EDE169 /* FloatingPanelController.swift */; };
 		BABC11722192A00500EDE169 /* FloatingPanelBackdropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABC11682192A00500EDE169 /* FloatingPanelBackdropView.swift */; };
 		BABC11732192A00500EDE169 /* FloatingPanelSurfaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABC11692192A00500EDE169 /* FloatingPanelSurfaceView.swift */; };
+		BACA0B94219A5042007C6057 /* UIImageColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BACA0B93219A5042007C6057 /* UIImageColors.swift */; };
 		BAE617A921914CD10055DEFB /* StationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE617A821914CD10055DEFB /* StationsViewController.swift */; };
 		BAF5392C2194F6C2001CEA28 /* StationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF5392B2194F6C2001CEA28 /* StationTableViewCell.swift */; };
 		BAF5392E2197A193001CEA28 /* String+ConvertedToSlug.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF5392D2197A193001CEA28 /* String+ConvertedToSlug.swift */; };
@@ -94,6 +95,7 @@
 		BABC11672192A00500EDE169 /* FloatingPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatingPanelController.swift; sourceTree = "<group>"; };
 		BABC11682192A00500EDE169 /* FloatingPanelBackdropView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatingPanelBackdropView.swift; sourceTree = "<group>"; };
 		BABC11692192A00500EDE169 /* FloatingPanelSurfaceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatingPanelSurfaceView.swift; sourceTree = "<group>"; };
+		BACA0B93219A5042007C6057 /* UIImageColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageColors.swift; sourceTree = "<group>"; };
 		BAE617A821914CD10055DEFB /* StationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsViewController.swift; sourceTree = "<group>"; };
 		BAF5392B2194F6C2001CEA28 /* StationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationTableViewCell.swift; sourceTree = "<group>"; };
 		BAF5392D2197A193001CEA28 /* String+ConvertedToSlug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ConvertedToSlug.swift"; sourceTree = "<group>"; };
@@ -231,6 +233,7 @@
 				BA113C7C218FB12900AAADA3 /* RadioTimeHelper.swift */,
 				BA113C7A218FB0A500AAADA3 /* ImageLoader.swift */,
 				BAF5392D2197A193001CEA28 /* String+ConvertedToSlug.swift */,
+				BACA0B93219A5042007C6057 /* UIImageColors.swift */,
 			);
 			path = Libraries;
 			sourceTree = "<group>";
@@ -464,6 +467,7 @@
 				BABC11702192A00500EDE169 /* FloatingPanelLayout.swift in Sources */,
 				BABC116D2192A00500EDE169 /* GrabberHandleView.swift in Sources */,
 				BAE617A921914CD10055DEFB /* StationsViewController.swift in Sources */,
+				BACA0B94219A5042007C6057 /* UIImageColors.swift in Sources */,
 				BAF5392C2194F6C2001CEA28 /* StationTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

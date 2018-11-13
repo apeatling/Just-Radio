@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 //*****************************************************************
 // RadioPlayerDelegate: Sends FRadioPlayer and Station/Track events
@@ -17,6 +18,8 @@ protocol RadioPlayerDelegate: class {
     func playbackStateDidChange(_ playbackState: FRadioPlaybackState)
     func trackDidUpdate(_ track: Track?)
     func trackArtworkDidUpdate(_ track: Track?)
+    
+    func portDidChange(portType: AVAudioSession.Port?, portName: String?)
     func rawMetadataDidChange(_ metadata: String?)
 }
 
@@ -131,5 +134,11 @@ extension RadioPlayer: FRadioPlayerDelegate {
         guard let rawValue = rawValue else { return }
         
         delegate?.rawMetadataDidChange(rawValue)
+    }
+    
+    func radioPlayer(_ player: FRadioPlayer, portDidChange portType: AVAudioSession.Port?, portName: String?) {
+        guard let portType = portType, let portName = portName else { return }
+        
+        delegate?.portDidChange(portType: portType, portName: portName)
     }
 }
