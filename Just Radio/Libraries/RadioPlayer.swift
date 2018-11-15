@@ -53,12 +53,13 @@ class RadioPlayer {
     //*****************************************************************
     
     // Update the track with an artist name and track name
-    func updateTrackMetadata(artistName: String, trackName: String) {
+    func updateTrackMetadata(artistName: String, trackName: String, isStationFallback: Bool = false) {
         if track == nil {
-            track = Track(title: trackName, artist: artistName)
+            track = Track(title: trackName, artist: artistName, isStationFallback: isStationFallback)
         } else {
             track?.title = trackName
             track?.artist = artistName
+            track?.isStationFallback = isStationFallback
         }
         
         delegate?.trackDidUpdate(track)
@@ -74,7 +75,7 @@ class RadioPlayer {
     // Reset the track metadata and artwork to use the current station infos
     func resetTrack(with station: Station?) {
         guard let station = station else { track = nil; return }
-        updateTrackMetadata(artistName: station.description, trackName: station.name)
+        updateTrackMetadata(artistName: station.description, trackName: station.name, isStationFallback: true)
         resetArtwork(with: station)
     }
     

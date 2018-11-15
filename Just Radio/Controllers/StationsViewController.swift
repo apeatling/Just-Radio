@@ -23,10 +23,16 @@ class StationsViewController: UIViewController {
     @IBOutlet weak var visualEffectView: UIVisualEffectView!
     
     // MARK: - Properties
-    let stationCaretaker = StationCaretaker()
-    var stations:[Station] {
-        get { return stationCaretaker.stations }
-        set { stationCaretaker.stations = newValue }
+    let favoriteStationsCaretaker = FavoriteStationsCaretaker()
+    var favoriteStations:[Station] {
+        get {
+            guard let stations = favoriteStationsCaretaker.stations else { return [] }
+            return stations
+        }
+        set {
+            favoriteStationsCaretaker.stations = newValue
+            try? favoriteStationsCaretaker.save()
+        }
     }
     var delegate: StationsViewControllerDelegate?
     
@@ -57,11 +63,11 @@ extension StationsViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return stations.count
+        return favoriteStations.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard !stations.isEmpty else {
+        if favoriteStations.isEmpty {
             let cell = UITableViewCell()
             cell.backgroundColor = .clear
             cell.isUserInteractionEnabled = false
@@ -70,7 +76,7 @@ extension StationsViewController: UITableViewDataSource {
         }
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "StationTableViewCell", for: indexPath) as! StationTableViewCell
-        let station = stations[indexPath.row]
+        let station = favoriteStations[indexPath.row]
         
         cell.configure(station: station)
         
@@ -82,34 +88,33 @@ extension StationsViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let station = stations[indexPath.row]
+        let station = favoriteStations[indexPath.row]
         delegate?.stationsViewController(self, didSelectStation: station)
     }
 }
 
-
-//        let bbc5live = Station(name: "BBC Radio 5 Live",
-//                               url: "http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio5live_mf_p",
-//                               image: "https://cdn-radiotime-logos.tunein.com/s24943d.png",
-//                               description: "Live news, live sport, from the BBC.",
-//                               city: "London",
-//                               region: "",
-//                               country: "UK",
-//                               tags: ["news", "sport"]
-//        )
-//        stations.append(bbc5live)
-
-//        let talksport = Station(name: "TalkSPORT",
-//                               url: "https://radio.talksport.com/stream?awparams=platform:ts-web&aw_0_req.gdpr=true",
-//                               image: "http://cdn-radiotime-logos.tunein.com/s17077d.png",
-//                               description: "Live Premier League football coverage, breaking sports news, transfer rumours & exclusive interviews.",
-//                               city: "London",
-//                               region: "",
-//                               country: "UK",
-//                               tags: ["sport"]
-//        )
-//        stations.append(talksport)
-
+//let bbc5live = Station(name: "BBC Radio 5 Live",
+//                       url: "http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio5live_mf_p",
+//                       image: "https://cdn-radiotime-logos.tunein.com/s24943d.png",
+//                       description: "Live news, live sport, from the BBC.",
+//                       city: "London",
+//                       region: "",
+//                       country: "UK",
+//                       tags: ["news", "sport"]
+//)
+//favoriteStations.append(bbc5live)
+//
+//let talksport = Station(name: "TalkSPORT",
+//                        url: "https://radio.talksport.com/stream?awparams=platform:ts-web&aw_0_req.gdpr=true",
+//                        image: "http://cdn-radiotime-logos.tunein.com/s17077d.png",
+//                        description: "Live Premier League football coverage, breaking sports news, transfer rumours & exclusive interviews.",
+//                        city: "London",
+//                        region: "",
+//                        country: "UK",
+//                        tags: ["sport"]
+//)
+//favoriteStations.append(talksport)
+//
 //let z953 = Station(name: "Z95.3",
 //                   url: "http://newcap.leanstream.co/CKZZFM-MP3",
 //                   image: "http://cdn-radiotime-logos.tunein.com/s31305d.png",
@@ -119,6 +124,18 @@ extension StationsViewController: UITableViewDelegate {
 //                   country: "Canada",
 //                   tags: ["top40", "pop"]
 //)
-//stations.append(z953)
+//favoriteStations.append(z953)
 //
-//        try? stationCaretaker.save()
+//
+//let cknw = Station(name: "CKNW 980",
+//                   url: "http://live.leanstream.co/CKNWAM-MP3",
+//                   image: "http://cdn-profiles.tunein.com/s31271/images/logod.png?t=151318",
+//                   description: "Your Global News Radio",
+//                   city: "Vancouver",
+//                   region: "BC",
+//                   country: "Canada",
+//                   tags: ["news", "talk"]
+//)
+//favoriteStations.append(cknw)
+//
+//try? favoriteStationsCaretaker.save()

@@ -14,9 +14,11 @@ struct Track {
     var artist: String
     var artworkImage: UIImage?
     var artworkLoaded = false
+    var isStationFallback = false
     
-    init(title: String, artist: String) {
+    init(title: String, artist: String, isStationFallback: Bool = false) {
         self.title = title
         self.artist = artist
+        self.isStationFallback = isStationFallback
     }
 }

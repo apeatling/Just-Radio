@@ -33,15 +33,17 @@
 		BABC11722192A00500EDE169 /* FloatingPanelBackdropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABC11682192A00500EDE169 /* FloatingPanelBackdropView.swift */; };
 		BABC11732192A00500EDE169 /* FloatingPanelSurfaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABC11692192A00500EDE169 /* FloatingPanelSurfaceView.swift */; };
 		BACA0B94219A5042007C6057 /* UIImageColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BACA0B93219A5042007C6057 /* UIImageColors.swift */; };
+		BACA0B98219BE5A8007C6057 /* UserDefaultsCaretaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BACA0B97219BE5A8007C6057 /* UserDefaultsCaretaker.swift */; };
+		BACA0B9A219BF143007C6057 /* LastPlayedStationCaretaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BACA0B99219BF143007C6057 /* LastPlayedStationCaretaker.swift */; };
+		BACA0B9C219CE11D007C6057 /* MarqueeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BACA0B9B219CE11D007C6057 /* MarqueeLabel.swift */; };
+		BACA0B9E219CE865007C6057 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BACA0B9D219CE865007C6057 /* AppSettings.swift */; };
 		BAE617A921914CD10055DEFB /* StationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE617A821914CD10055DEFB /* StationsViewController.swift */; };
 		BAF5392C2194F6C2001CEA28 /* StationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF5392B2194F6C2001CEA28 /* StationTableViewCell.swift */; };
 		BAF5392E2197A193001CEA28 /* String+ConvertedToSlug.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF5392D2197A193001CEA28 /* String+ConvertedToSlug.swift */; };
-		BAF9C460218FB2CB004BC248 /* DiskCaretaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF9C45E218FB2CB004BC248 /* DiskCaretaker.swift */; };
-		BAF9C461218FB2CB004BC248 /* StationCaretaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF9C45F218FB2CB004BC248 /* StationCaretaker.swift */; };
+		BAF9C461218FB2CB004BC248 /* FavoriteStationsCaretaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF9C45F218FB2CB004BC248 /* FavoriteStationsCaretaker.swift */; };
 		BAF9C466218FB2DF004BC248 /* RadioTimeSearchProviderStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF9C463218FB2DF004BC248 /* RadioTimeSearchProviderStrategy.swift */; };
 		BAF9C467218FB2DF004BC248 /* DirbleSearchProviderStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF9C464218FB2DF004BC248 /* DirbleSearchProviderStrategy.swift */; };
 		BAF9C468218FB2DF004BC248 /* SearchProviderStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF9C465218FB2DF004BC248 /* SearchProviderStrategy.swift */; };
-		BAF9C46A218FB3E4004BC248 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAF9C469218FB3E4004BC248 /* AppSettings.swift */; };
 		BAF9C46C218FB68F004BC248 /* StationData.json in Sources */ = {isa = PBXBuildFile; fileRef = BAF9C46B218FB68F004BC248 /* StationData.json */; };
 /* End PBXBuildFile section */
 
@@ -96,15 +98,17 @@
 		BABC11682192A00500EDE169 /* FloatingPanelBackdropView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatingPanelBackdropView.swift; sourceTree = "<group>"; };
 		BABC11692192A00500EDE169 /* FloatingPanelSurfaceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatingPanelSurfaceView.swift; sourceTree = "<group>"; };
 		BACA0B93219A5042007C6057 /* UIImageColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageColors.swift; sourceTree = "<group>"; };
+		BACA0B97219BE5A8007C6057 /* UserDefaultsCaretaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsCaretaker.swift; sourceTree = "<group>"; };
+		BACA0B99219BF143007C6057 /* LastPlayedStationCaretaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LastPlayedStationCaretaker.swift; sourceTree = "<group>"; };
+		BACA0B9B219CE11D007C6057 /* MarqueeLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarqueeLabel.swift; sourceTree = "<group>"; };
+		BACA0B9D219CE865007C6057 /* AppSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		BAE617A821914CD10055DEFB /* StationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsViewController.swift; sourceTree = "<group>"; };
 		BAF5392B2194F6C2001CEA28 /* StationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationTableViewCell.swift; sourceTree = "<group>"; };
 		BAF5392D2197A193001CEA28 /* String+ConvertedToSlug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ConvertedToSlug.swift"; sourceTree = "<group>"; };
-		BAF9C45E218FB2CB004BC248 /* DiskCaretaker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiskCaretaker.swift; sourceTree = "<group>"; };
-		BAF9C45F218FB2CB004BC248 /* StationCaretaker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StationCaretaker.swift; sourceTree = "<group>"; };
+		BAF9C45F218FB2CB004BC248 /* FavoriteStationsCaretaker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteStationsCaretaker.swift; sourceTree = "<group>"; };
 		BAF9C463218FB2DF004BC248 /* RadioTimeSearchProviderStrategy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadioTimeSearchProviderStrategy.swift; sourceTree = "<group>"; };
 		BAF9C464218FB2DF004BC248 /* DirbleSearchProviderStrategy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DirbleSearchProviderStrategy.swift; sourceTree = "<group>"; };
 		BAF9C465218FB2DF004BC248 /* SearchProviderStrategy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchProviderStrategy.swift; sourceTree = "<group>"; };
-		BAF9C469218FB3E4004BC248 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		BAF9C46B218FB68F004BC248 /* StationData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = StationData.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -228,10 +232,11 @@
 			children = (
 				BABC115F21929FD200EDE169 /* FloatingPanel */,
 				BA113C6B218FA44400AAADA3 /* FRadioPlayer */,
-				BA113C77218FB03F00AAADA3 /* RadioPlayer.swift */,
 				BA113C7D218FB12900AAADA3 /* DataManager.swift */,
-				BA113C7C218FB12900AAADA3 /* RadioTimeHelper.swift */,
 				BA113C7A218FB0A500AAADA3 /* ImageLoader.swift */,
+				BACA0B9B219CE11D007C6057 /* MarqueeLabel.swift */,
+				BA113C77218FB03F00AAADA3 /* RadioPlayer.swift */,
+				BA113C7C218FB12900AAADA3 /* RadioTimeHelper.swift */,
 				BAF5392D2197A193001CEA28 /* String+ConvertedToSlug.swift */,
 				BACA0B93219A5042007C6057 /* UIImageColors.swift */,
 			);
@@ -251,7 +256,7 @@
 		BA113C72218FA55300AAADA3 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				BAF9C469218FB3E4004BC248 /* AppSettings.swift */,
+				BACA0B9D219CE865007C6057 /* AppSettings.swift */,
 				BA113C73218FA56F00AAADA3 /* Station.swift */,
 				BA113C75218FAFC900AAADA3 /* Track.swift */,
 			);
@@ -261,8 +266,9 @@
 		BA113D82218FB20800AAADA3 /* Caretakers */ = {
 			isa = PBXGroup;
 			children = (
-				BAF9C45E218FB2CB004BC248 /* DiskCaretaker.swift */,
-				BAF9C45F218FB2CB004BC248 /* StationCaretaker.swift */,
+				BACA0B97219BE5A8007C6057 /* UserDefaultsCaretaker.swift */,
+				BAF9C45F218FB2CB004BC248 /* FavoriteStationsCaretaker.swift */,
+				BACA0B99219BF143007C6057 /* LastPlayedStationCaretaker.swift */,
 			);
 			path = Caretakers;
 			sourceTree = "<group>";
@@ -441,7 +447,9 @@
 				BA113C78218FB03F00AAADA3 /* RadioPlayer.swift in Sources */,
 				BABC11722192A00500EDE169 /* FloatingPanelBackdropView.swift in Sources */,
 				BA113C39218FA2DC00AAADA3 /* NowPlayingViewController.swift in Sources */,
+				BACA0B9C219CE11D007C6057 /* MarqueeLabel.swift in Sources */,
 				BAF9C46C218FB68F004BC248 /* StationData.json in Sources */,
+				BACA0B9A219BF143007C6057 /* LastPlayedStationCaretaker.swift in Sources */,
 				BABC116F2192A00500EDE169 /* UIExtensions.swift in Sources */,
 				BA113C70218FA44500AAADA3 /* FRadioAPI.swift in Sources */,
 				BA113C71218FA44500AAADA3 /* FRadioPlayer.swift in Sources */,
@@ -452,10 +460,9 @@
 				BABC116C2192A00500EDE169 /* FloatingPanelBehavior.swift in Sources */,
 				BABC116E2192A00500EDE169 /* Logger.swift in Sources */,
 				BA113C37218FA2DC00AAADA3 /* AppDelegate.swift in Sources */,
-				BAF9C461218FB2CB004BC248 /* StationCaretaker.swift in Sources */,
+				BAF9C461218FB2CB004BC248 /* FavoriteStationsCaretaker.swift in Sources */,
 				BA113C7B218FB0A500AAADA3 /* ImageLoader.swift in Sources */,
 				BA113C7E218FB12900AAADA3 /* RadioTimeHelper.swift in Sources */,
-				BAF9C460218FB2CB004BC248 /* DiskCaretaker.swift in Sources */,
 				BAF9C468218FB2DF004BC248 /* SearchProviderStrategy.swift in Sources */,
 				BA113C74218FA56F00AAADA3 /* Station.swift in Sources */,
 				BA113C7F218FB12900AAADA3 /* DataManager.swift in Sources */,
@@ -463,12 +470,13 @@
 				BA113C6F218FA44500AAADA3 /* Reachability.swift in Sources */,
 				BABC11712192A00500EDE169 /* FloatingPanelController.swift in Sources */,
 				BA113C76218FAFC900AAADA3 /* Track.swift in Sources */,
-				BAF9C46A218FB3E4004BC248 /* AppSettings.swift in Sources */,
 				BABC11702192A00500EDE169 /* FloatingPanelLayout.swift in Sources */,
 				BABC116D2192A00500EDE169 /* GrabberHandleView.swift in Sources */,
 				BAE617A921914CD10055DEFB /* StationsViewController.swift in Sources */,
+				BACA0B9E219CE865007C6057 /* AppSettings.swift in Sources */,
 				BACA0B94219A5042007C6057 /* UIImageColors.swift in Sources */,
 				BAF5392C2194F6C2001CEA28 /* StationTableViewCell.swift in Sources */,
+				BACA0B98219BE5A8007C6057 /* UserDefaultsCaretaker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

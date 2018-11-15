@@ -43,8 +43,6 @@ public struct Station: Codable {
         let filePath = fileURL.path
         
         if FileManager.default.fileExists(atPath: filePath) {
-            print( "Found local image file for \(self.name)" )
-            
             DispatchQueue.main.async {
                 completion(UIImage(contentsOfFile: filePath))
             }
@@ -52,8 +50,6 @@ public struct Station: Codable {
         }
         
         if let url = URL(string: (image as NSString) as String) {
-            print( "Using remote image file for \(self.name)" )
-            
             let session = URLSession.shared
             
             let downloadTask = session.downloadTask(with: url, completionHandler: { tempLocalUrl, response, error in

@@ -14,14 +14,18 @@ class NowPlayingViewController: UIViewController {
     // MARK: - Outlets
     @IBOutlet weak var albumArtImageView: UIImageView!
     @IBOutlet weak var trackNameLabel: UILabel!
-    @IBOutlet weak var artistLabel: UILabel!
     @IBOutlet weak var playPauseButton: UIButton!
-    @IBOutlet weak var volumeSlider: UISlider!
     @IBOutlet weak var airplayStackView: UIStackView!
     @IBOutlet weak var airplayButton: UIButton!
     @IBOutlet weak var airplayLabel: UILabel!
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var backgroundVisualEffectView: UIVisualEffectView!
+    
+    // MARK: - Constraint Outlets
+    @IBOutlet weak var albumArtHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var albumArtWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var albumArtBottomSpaceConstraint: NSLayoutConstraint!
+    @IBOutlet weak var trackNameTopConstraint: NSLayoutConstraint!
     
     // MARK: - Properties
     var fpc: FloatingPanelController!
@@ -29,18 +33,17 @@ class NowPlayingViewController: UIViewController {
     
     let radioPlayer = RadioPlayer()
     var currentStation:Station!
-    var currentTrack:Track! {
-        didSet {
-            currentTrackDidUpdate(previousTrack: oldValue)
-        }
-    }
+    var currentTrack:Track!
+    var isShowingTrackLabel = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        setCurrentStation(station: nil)
+ 
         fpc = FloatingPanelController()
         fpc.delegate = self
-        
+
         // Initialize FloatingPanelController and add the view
         fpc.surfaceView.backgroundColor = .clear
         fpc.surfaceView.cornerRadius = 9.0
@@ -48,23 +51,27 @@ class NowPlayingViewController: UIViewController {
 
         // Set a content view controller.
         stationsVC = storyboard?.instantiateViewController(withIdentifier: "StationsViewController") as? StationsViewController
-       
+
         // Track a scroll view(or the siblings) in the content view controller.
         fpc.set(contentViewController: stationsVC)
         fpc.track(scrollView: stationsVC.tableView)
-        
+
+        albumArtImageView.layer.cornerRadius = 10
+        albumArtImageView.clipsToBounds = true
+
         setupRemoteCommandCenter()
-        getActiveAirplayDevice()
-        setupAirplayPicker()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        fpc.addPanel(toParent: self, animated: true)
+        fpc.addPanel(toParent: self, animated: false)
         
         stationsVC.searchBar.delegate = self
         stationsVC.delegate = self
         radioPlayer.delegate = self
+        
+        getActiveAirplayDevice()
+        setupAirplayPicker()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -73,32 +80,80 @@ class NowPlayingViewController: UIViewController {
         fpc.removePanelFromParent(animated: true)
     }
     
-    private func currentTrackDidUpdate(previousTrack: Track?) {
-        artistLabel.text = currentTrack.artist
-        trackNameLabel.text = currentTrack.title
+    private func setCurrentStation(station: Station?) {
+        let lastPlayedStationCaretaker = LastPlayedStationCaretaker()
         
-        albumArtImageView.image = currentTrack.artworkImage
-        backgroundImageView.image = currentTrack.artworkImage
-
-        // Set colors
-//        albumArtImageView.image?.getColors(quality: .low, { (colors) in
-//            self.artistLabel.textColor = colors.primary
-//        })
-
-        updateNowPlayingInfo(artist: currentTrack.artist, title: currentTrack.title, image: currentTrack.artworkImage)
+        if station == nil {
+            guard let lastPlayedStation = lastPlayedStationCaretaker.station else { return }
+            currentStation = lastPlayedStation
+        } else {
+            currentStation = station
+            
+            lastPlayedStationCaretaker.station = station
+            try? lastPlayedStationCaretaker.save()
+        }
+        
+        radioPlayer.station = currentStation
+        radioPlayer.player.radioURL = URL(string: currentStation.url)
     }
     
+    private func setCurrentTrack(track: Track) {
+        let previousTrack = currentTrack
+        currentTrack = track
+        
+        let fullTrackTitle = currentTrack.artist.capitalized + " — " + currentTrack.title.capitalized
+        let attributedString = NSMutableAttributedString(string: fullTrackTitle,
+                                                         attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 22)])
+        
+        let boldFontAttribute = [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 22)]
+        let boldRange = (fullTrackTitle as NSString).range(of: currentTrack.artist.capitalized)
+        attributedString.addAttributes(boldFontAttribute, range: boldRange)
+        
+        let colorAttribute = [NSAttributedString.Key.foregroundColor: UIColor.black.withAlphaComponent(0.75)]
+        let colorRange = (fullTrackTitle as NSString).range(of: " — " + currentTrack.title.capitalized)
+        attributedString.addAttributes(colorAttribute, range: colorRange)
+        
+        trackNameLabel.attributedText = attributedString
+        
+        UIView.transition(with: albumArtImageView,
+                          duration: 0.2,
+                          options: .transitionCrossDissolve,
+                          animations: {
+                            self.albumArtImageView.image = self.currentTrack.artworkImage
+                          },
+                          completion: nil)
+
+        UIView.transition(with: backgroundImageView,
+                          duration: 0.2,
+                          options: .transitionCrossDissolve,
+                          animations: {
+                            self.backgroundImageView.image = self.currentTrack.artworkImage
+                          },
+                          completion: nil)
+        
+        (currentTrack.isStationFallback) ? hideTrackLabel() : showTrackLabel()
+        
+        // Set colors
+        //        albumArtImageView.image?.getColors(quality: .low, { (colors) in
+        //            self.artistLabel.textColor = colors.primary
+        //        })
+        
+        updateNowPlayingInfo(artist: currentTrack.artist, title: currentTrack.title, image: currentTrack.artworkImage)
+    }
+
     func setupRemoteCommandCenter() {
         // Get the shared MPRemoteCommandCenter
         let commandCenter = MPRemoteCommandCenter.shared()
 
         // Add handler for Play Command
         commandCenter.playCommand.addTarget { event in
+            self.radioPlayer.player.play()
             return .success
         }
 
         // Add handler for Pause Command
         commandCenter.pauseCommand.addTarget { event in
+            self.radioPlayer.player.stop()
             return .success
         }
 
@@ -141,7 +196,8 @@ class NowPlayingViewController: UIViewController {
             routeDetector.isRouteDetectionEnabled = true
         
         if !routeDetector.multipleRoutesDetected {
-           self.airplayStackView.isHidden = true
+            print( "NO AIRPLAY ROUTES: HIDE PICKER" )
+            self.airplayStackView.isHidden = true
         }
 
         // Add airplay picker to button
@@ -155,31 +211,72 @@ class NowPlayingViewController: UIViewController {
         
         self.airplayStackView.addSubview(routePickerView)
     }
-
-    // MARK: - Actions
-    @IBAction func tappedPlayButton(_ sender: Any) {
+    
+    func showTrackLabel() {
+        if isShowingTrackLabel { return }
+        if currentTrack.artist == currentTrack.title { return }
         
+        isShowingTrackLabel = true
+        let sizeChange:CGFloat = 50
+        self.albumArtHeightConstraint.constant = self.albumArtHeightConstraint.constant - sizeChange
+        self.albumArtWidthConstraint.constant = self.albumArtWidthConstraint.constant - sizeChange
+        self.albumArtBottomSpaceConstraint.constant = self.albumArtBottomSpaceConstraint.constant + sizeChange
+        self.trackNameTopConstraint.constant = self.trackNameTopConstraint.constant + sizeChange
+        self.trackNameLabel.isHidden = false
+
+        UIView.animate(withDuration: 0.5,
+                       delay: 0.2,
+                       usingSpringWithDamping: 0.5,
+                       initialSpringVelocity: 0.75,
+                       options: [.curveEaseInOut],
+                       animations: {
+                        self.trackNameLabel.layer.opacity = 1
+                        self.view.layoutIfNeeded()
+        }) { (complete) in }
     }
 
-    @IBAction func tappedPauseButton(_ sender: Any) {
+    func hideTrackLabel() {
+         if !isShowingTrackLabel { return }
         
+        isShowingTrackLabel = false
+        let sizeChange:CGFloat = -50
+        self.albumArtHeightConstraint.constant = self.albumArtHeightConstraint.constant - sizeChange
+        self.albumArtWidthConstraint.constant = self.albumArtWidthConstraint.constant - sizeChange
+        self.albumArtBottomSpaceConstraint.constant = self.albumArtBottomSpaceConstraint.constant + sizeChange
+        self.trackNameTopConstraint.constant = self.trackNameTopConstraint.constant + sizeChange
+        
+        self.trackNameLabel.layer.opacity = 0
+        self.trackNameLabel.isHidden = true
+
+        UIView.animate(withDuration: 0.5,
+                       delay: 0,
+                       usingSpringWithDamping: 0.5,
+                       initialSpringVelocity: 0.75,
+                       options: [.curveEaseInOut],
+                       animations: {
+                        self.view.layoutIfNeeded()
+        }) { (complete) in }
+    }
+
+    // MARK: - Actions
+    @IBAction func tappedPlayPauseButton(_ sender: Any) {
+        if radioPlayer.player.isPlaying {
+            radioPlayer.player.stop()
+        } else {
+            radioPlayer.player.play()
+        }
     }
 }
 
 extension NowPlayingViewController: StationsViewControllerDelegate {
     func stationsViewController(_ viewController: StationsViewController, didSelectStation station: Station) {
-        currentStation = station
+        currentStation = nil
         
-        trackNameLabel.text = currentStation.name
-        artistLabel.text = currentStation.description
-
-        currentStation.getImage { (image) in
-            self.albumArtImageView.image = image
-            self.backgroundImageView.image = image
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.fpc.move(to: .half, animated: true)
         }
- 
-        radioPlayer.station = currentStation
-        radioPlayer.player.radioURL = URL(string: currentStation.url)
+        
+        setCurrentStation(station: station)
         radioPlayer.player.play()
     }
     
@@ -244,12 +341,12 @@ extension NowPlayingViewController: RadioPlayerDelegate {
     
     func trackDidUpdate(_ track: Track?) {
         guard let track = track else { return }
-        currentTrack = track
+        setCurrentTrack(track: track)
     }
     
     func trackArtworkDidUpdate(_ track: Track?) {
         guard let track = track else { return }
-        currentTrack = track
+        setCurrentTrack(track: track)
     }
     
     func portDidChange(portType: AVAudioSession.Port?, portName: String?) {
@@ -322,7 +419,7 @@ class NowPlayingFloatingPanelLayout: FloatingPanelLayout {
     public func insetFor(position: FloatingPanelPosition) -> CGFloat? {
         switch position {
         case .full: return 16.0 // A top inset from safe area
-        case .half: return 245.0 // A bottom inset from the safe area
+        case .half: return 290.0 // A bottom inset from the safe area
         case .tip: return 0 // A bottom inset from the safe area
         }
     }
