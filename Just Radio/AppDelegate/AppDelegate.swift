@@ -21,6 +21,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FRadioPlayer.shared.isAutoPlay = true
         FRadioPlayer.shared.enableArtwork = true
         FRadioPlayer.shared.artworkSize = 600
+        
+        if let window = self.window {
+            let radioPlayer = RadioPlayer()
+            let nowPlayingVC = window.rootViewController as! NowPlayingViewController
+                nowPlayingVC.radioPlayer = radioPlayer
+        }
 
         return true
     }

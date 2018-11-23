@@ -30,22 +30,24 @@ protocol RadioPlayerDelegate: class {
 class RadioPlayer {
     weak var delegate: RadioPlayerDelegate?
     
-    let player = FRadioPlayer.shared
+    let fplayer = FRadioPlayer.shared
     
     var station: Station? {
         didSet { resetTrack(with: station) }
     }
     
     private(set) var track: Track?
+    private let notificationCenter: NotificationCenter
     
-    init() {
-        player.delegate = self
+    init(notificationCenter: NotificationCenter = .default) {
+        self.notificationCenter = notificationCenter
+        fplayer.delegate = self
     }
     
     func resetRadioPlayer() {
         station = nil
         track = nil
-        player.radioURL = nil
+        fplayer.radioURL = nil
     }
     
     //*****************************************************************
@@ -75,6 +77,7 @@ class RadioPlayer {
     // Reset the track metadata and artwork to use the current station infos
     func resetTrack(with station: Station?) {
         guard let station = station else { track = nil; return }
+
         updateTrackMetadata(artistName: station.description, trackName: station.name, isStationFallback: true)
         resetArtwork(with: station)
     }
@@ -105,26 +108,28 @@ extension RadioPlayer: FRadioPlayerDelegate {
     
     func radioPlayer(_ player: FRadioPlayer, playerStateDidChange state: FRadioPlayerState) {
         delegate?.playerStateDidChange(state)
+        notificationCenter.post(name: NSNotification.Name(rawValue: "RadioPlayer.playerStateDidChange"), object: state)
     }
     
     func radioPlayer(_ player: FRadioPlayer, playbackStateDidChange state: FRadioPlaybackState) {
         delegate?.playbackStateDidChange(state)
+        notificationCenter.post(name: NSNotification.Name(rawValue: "RadioPlayer.playbackStateDidChange"), object: state)
     }
     
     func radioPlayer(_ player: FRadioPlayer, metadataDidChange artistName: String?, trackName: String?) {
         guard
-            let artistName = artistName, !artistName.isEmpty,
-            let trackName = trackName, !trackName.isEmpty else {
+            let artistName = artistName, !artistName.isEmpty, artistName != " ",
+            let trackName = trackName, trackName != " ", !trackName.isEmpty else {
                 resetTrack(with: station)
                 return
         }
-        
+
         updateTrackMetadata(artistName: artistName, trackName: trackName)
     }
     
     func radioPlayer(_ player: FRadioPlayer, artworkDidChange artworkURL: URL?) {
         guard let artworkURL = artworkURL else { resetArtwork(with: station); return }
-        
+
         ImageLoader.sharedLoader.imageForUrl(urlString: artworkURL.absoluteString) { (image, stringURL) in
             guard let image = image else { self.resetArtwork(with: self.station); return }
             self.updateTrackArtwork(with: image, artworkLoaded: true)
@@ -133,7 +138,7 @@ extension RadioPlayer: FRadioPlayerDelegate {
     
     func radioPlayer(_ player: FRadioPlayer, metadataDidChange rawValue: String?) {
         guard let rawValue = rawValue else { return }
-        
+
         delegate?.rawMetadataDidChange(rawValue)
     }
     

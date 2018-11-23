@@ -388,6 +388,14 @@ open class FRadioPlayer: NSObject {
     
     private func timedMetadataDidChange(rawValue: String?) {
         let parts = rawValue?.components(separatedBy: " - ")
+        
+        // Check for single char meta, or timestamps
+        if let first = parts?.first, let last = parts?.last {
+            if first.count < 2 || last.count < 2 || first.components(separatedBy: ":").count > 2 || last.components(separatedBy: ":").count > 2 {
+                return
+            }
+        }
+
         delegate?.radioPlayer?(self, metadataDidChange: parts?.first, trackName: parts?.last)
         delegate?.radioPlayer?(self, metadataDidChange: rawValue)
         shouldGetArtwork(for: rawValue, enableArtwork)
@@ -399,9 +407,7 @@ open class FRadioPlayer: NSObject {
             self.delegate?.radioPlayer?(self, artworkDidChange: nil)
             return
         }
-        
-        dump(rawValue)
-        
+
         FRadioAPI.getArtwork(for: rawValue, size: artworkSize, completionHandler: { [unowned self] artworlURL in
             DispatchQueue.main.async {
                 self.delegate?.radioPlayer?(self, artworkDidChange: artworlURL)

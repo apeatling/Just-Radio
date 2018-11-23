@@ -8,11 +8,11 @@
 
 import Foundation
 
-enum DirbleSearchProviderStrategyError: Error {
+enum DirbleStationProviderStrategyError: Error {
     case noValidResults
 }
 
-public class DirbleSearchProviderStrategy: SearchProviderStrategy {
+public class DirbleStationProviderStrategy: StationProviderStrategy {
     public var serviceName = "Dirble"
     private var apiKey = "1b8f8a137a2777dd203532aa0d"
     
@@ -33,9 +33,9 @@ public class DirbleSearchProviderStrategy: SearchProviderStrategy {
             }
             
             guard let stationsResponse = response else {
-                completion(nil, DirbleSearchProviderStrategyError.noValidResults)
+                completion(nil, DirbleStationProviderStrategyError.noValidResults)
                 
-                if kDebugLog { print("SEARCH PROVIDER ERROR: \(DirbleSearchProviderStrategyError.noValidResults)") }
+                if kDebugLog { print("SEARCH PROVIDER ERROR: \(DirbleStationProviderStrategyError.noValidResults)") }
                 return
             }
 
@@ -74,5 +74,9 @@ public class DirbleSearchProviderStrategy: SearchProviderStrategy {
             
             completion(radioStations, nil)
         }
+    }
+    
+    public func getRecommendedStations(completion: @escaping ([Station]?, Error?) -> ()) {
+        completion([], nil)
     }
 }

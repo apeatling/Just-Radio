@@ -21,7 +21,9 @@ public struct Station: Codable {
     
     var tags: [String]
     
-    init(name: String, url: String, image: String, description: String, city: String, region: String, country: String, tags: [String] = []) {
+    var isFav: Bool
+    
+    init(name: String, url: String, image: String, description: String, city: String, region: String, country: String, tags: [String] = [], isFav: Bool = false) {
         self.name = name
         self.url = url
         self.image = image
@@ -32,6 +34,8 @@ public struct Station: Codable {
         self.country = country
         
         self.tags = tags
+        
+        self.isFav = isFav
     }
     
     func getImage(completion: @escaping (_ image: UIImage?)->()) {
@@ -56,7 +60,6 @@ public struct Station: Codable {
                 if let tempLocalUrl = tempLocalUrl, error == nil {
                     do {
                         try FileManager.default.copyItem(at: tempLocalUrl, to: fileURL)
-                        print( "Copied to \(fileURL)" )
                         
                         DispatchQueue.main.async {
                             completion(UIImage(contentsOfFile: fileURL.path))

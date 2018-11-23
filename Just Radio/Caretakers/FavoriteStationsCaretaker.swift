@@ -15,10 +15,14 @@ public final class FavoriteStationsCaretaker {
     
     // MARK: - Object Lifecycle
     public init() {
+        reload()
+    }
+    
+    public func reload() {
         do {
             self.stations = try UserDefaultsCaretaker.retrieve([Station].self, key: key)
         } catch {
-            self.stations = nil
+            self.stations = []
         }
     }
 

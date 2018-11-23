@@ -27,11 +27,12 @@ class NowPlayingViewController: UIViewController {
     @IBOutlet weak var albumArtBottomSpaceConstraint: NSLayoutConstraint!
     @IBOutlet weak var trackNameTopConstraint: NSLayoutConstraint!
     
+    // MARK: - Injected Dependencies
+    var radioPlayer:RadioPlayer!
+    
     // MARK: - Properties
     var fpc: FloatingPanelController!
     var stationsVC: StationsViewController!
-    
-    let radioPlayer = RadioPlayer()
     var currentStation:Station!
     var currentTrack:Track!
     var isShowingTrackLabel = false
@@ -39,20 +40,16 @@ class NowPlayingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        stationsVC = storyboard?.instantiateViewController(withIdentifier: "StationsViewController") as? StationsViewController
+        stationsVC.radioPlayer = self.radioPlayer
+        
         setCurrentStation(station: nil)
  
         fpc = FloatingPanelController()
         fpc.delegate = self
-
-        // Initialize FloatingPanelController and add the view
         fpc.surfaceView.backgroundColor = .clear
         fpc.surfaceView.cornerRadius = 9.0
         fpc.surfaceView.shadowHidden = false
-
-        // Set a content view controller.
-        stationsVC = storyboard?.instantiateViewController(withIdentifier: "StationsViewController") as? StationsViewController
-
-        // Track a scroll view(or the siblings) in the content view controller.
         fpc.set(contentViewController: stationsVC)
         fpc.track(scrollView: stationsVC.tableView)
 
@@ -65,10 +62,10 @@ class NowPlayingViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         fpc.addPanel(toParent: self, animated: false)
+        radioPlayer.delegate = self
         
         stationsVC.searchBar.delegate = self
         stationsVC.delegate = self
-        radioPlayer.delegate = self
         
         getActiveAirplayDevice()
         setupAirplayPicker()
@@ -92,15 +89,15 @@ class NowPlayingViewController: UIViewController {
             lastPlayedStationCaretaker.station = station
             try? lastPlayedStationCaretaker.save()
         }
-        
+
+        stationsVC.currentStation = currentStation
         radioPlayer.station = currentStation
-        radioPlayer.player.radioURL = URL(string: currentStation.url)
+        radioPlayer.fplayer.radioURL = URL(string: currentStation.url)
     }
     
     private func setCurrentTrack(track: Track) {
-        let previousTrack = currentTrack
         currentTrack = track
-        
+
         let fullTrackTitle = currentTrack.artist.capitalized + " — " + currentTrack.title.capitalized
         let attributedString = NSMutableAttributedString(string: fullTrackTitle,
                                                          attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 22)])
@@ -116,7 +113,7 @@ class NowPlayingViewController: UIViewController {
         trackNameLabel.attributedText = attributedString
         
         UIView.transition(with: albumArtImageView,
-                          duration: 0.2,
+                          duration: 0.17,
                           options: .transitionCrossDissolve,
                           animations: {
                             self.albumArtImageView.image = self.currentTrack.artworkImage
@@ -124,7 +121,7 @@ class NowPlayingViewController: UIViewController {
                           completion: nil)
 
         UIView.transition(with: backgroundImageView,
-                          duration: 0.2,
+                          duration: 0.17,
                           options: .transitionCrossDissolve,
                           animations: {
                             self.backgroundImageView.image = self.currentTrack.artworkImage
@@ -147,13 +144,13 @@ class NowPlayingViewController: UIViewController {
 
         // Add handler for Play Command
         commandCenter.playCommand.addTarget { event in
-            self.radioPlayer.player.play()
+            self.radioPlayer.fplayer.play()
             return .success
         }
 
         // Add handler for Pause Command
         commandCenter.pauseCommand.addTarget { event in
-            self.radioPlayer.player.stop()
+            self.radioPlayer.fplayer.stop()
             return .success
         }
 
@@ -185,20 +182,21 @@ class NowPlayingViewController: UIViewController {
     }
     
     func getActiveAirplayDevice() {
-        guard let activeRoute = radioPlayer.player.getCurrentRoute() else { return }
+        guard let activeRoute = radioPlayer.fplayer.getCurrentRoute() else { return }
         self.portDidChange(portType: activeRoute.portType, portName: activeRoute.portName)
     }
     
     func setupAirplayPicker() {
         self.airplayStackView.isHidden = false
-        
-        let routeDetector = AVRouteDetector()
-            routeDetector.isRouteDetectionEnabled = true
-        
-        if !routeDetector.multipleRoutesDetected {
-            print( "NO AIRPLAY ROUTES: HIDE PICKER" )
-            self.airplayStackView.isHidden = true
-        }
+
+// TURNED OFF - API DOES NOT SEEM RELIABLE
+//        let routeDetector = AVRouteDetector()
+//            routeDetector.isRouteDetectionEnabled = true
+//
+//        if !routeDetector.multipleRoutesDetected {
+//            print( "NO AIRPLAY ROUTES: HIDE PICKER" )
+//            self.airplayStackView.isHidden = true
+//        }
 
         // Add airplay picker to button
         self.airplayStackView.subviews.forEach({ if $0 is AVRoutePickerView { $0.removeFromSuperview() } })
@@ -217,67 +215,63 @@ class NowPlayingViewController: UIViewController {
         if currentTrack.artist == currentTrack.title { return }
         
         isShowingTrackLabel = true
-        let sizeChange:CGFloat = 50
-        self.albumArtHeightConstraint.constant = self.albumArtHeightConstraint.constant - sizeChange
-        self.albumArtWidthConstraint.constant = self.albumArtWidthConstraint.constant - sizeChange
-        self.albumArtBottomSpaceConstraint.constant = self.albumArtBottomSpaceConstraint.constant + sizeChange
-        self.trackNameTopConstraint.constant = self.trackNameTopConstraint.constant + sizeChange
-        self.trackNameLabel.isHidden = false
-
-        UIView.animate(withDuration: 0.5,
-                       delay: 0.2,
-                       usingSpringWithDamping: 0.5,
-                       initialSpringVelocity: 0.75,
-                       options: [.curveEaseInOut],
-                       animations: {
-                        self.trackNameLabel.layer.opacity = 1
-                        self.view.layoutIfNeeded()
-        }) { (complete) in }
+        toggleTrackLabel(shouldShow: true, distanceToMove: 42, delay: 0.15)
     }
 
     func hideTrackLabel() {
-         if !isShowingTrackLabel { return }
+        if !isShowingTrackLabel { return }
         
         isShowingTrackLabel = false
-        let sizeChange:CGFloat = -50
-        self.albumArtHeightConstraint.constant = self.albumArtHeightConstraint.constant - sizeChange
-        self.albumArtWidthConstraint.constant = self.albumArtWidthConstraint.constant - sizeChange
-        self.albumArtBottomSpaceConstraint.constant = self.albumArtBottomSpaceConstraint.constant + sizeChange
-        self.trackNameTopConstraint.constant = self.trackNameTopConstraint.constant + sizeChange
-        
-        self.trackNameLabel.layer.opacity = 0
-        self.trackNameLabel.isHidden = true
+        toggleTrackLabel(shouldShow: false, distanceToMove: -42)
+    }
 
-        UIView.animate(withDuration: 0.5,
-                       delay: 0,
-                       usingSpringWithDamping: 0.5,
-                       initialSpringVelocity: 0.75,
+    func toggleTrackLabel(shouldShow: Bool, distanceToMove: CGFloat, delay: Double = 0) {
+        let distanceToMove:CGFloat = distanceToMove
+        self.albumArtHeightConstraint.constant = self.albumArtHeightConstraint.constant - distanceToMove
+        self.albumArtWidthConstraint.constant = self.albumArtWidthConstraint.constant - distanceToMove
+        self.albumArtBottomSpaceConstraint.constant = self.albumArtBottomSpaceConstraint.constant + distanceToMove
+        self.trackNameTopConstraint.constant = self.trackNameTopConstraint.constant + distanceToMove
+        
+        if shouldShow {
+            self.trackNameLabel.isHidden = false
+        } else {
+            self.trackNameLabel.isHidden = true
+            self.trackNameLabel.layer.opacity = 0
+        }
+        
+        UIView.animate(withDuration: 0.6,
+                       delay: delay,
+                       usingSpringWithDamping: 0.6,
+                       initialSpringVelocity: 0.7,
                        options: [.curveEaseInOut],
                        animations: {
+                        if shouldShow { self.trackNameLabel.layer.opacity = 1 }
                         self.view.layoutIfNeeded()
         }) { (complete) in }
     }
-
+    
     // MARK: - Actions
     @IBAction func tappedPlayPauseButton(_ sender: Any) {
-        if radioPlayer.player.isPlaying {
-            radioPlayer.player.stop()
+        if radioPlayer.fplayer.isPlaying {
+            radioPlayer.fplayer.stop()
         } else {
-            radioPlayer.player.play()
+            radioPlayer.fplayer.play()
         }
     }
 }
 
 extension NowPlayingViewController: StationsViewControllerDelegate {
-    func stationsViewController(_ viewController: StationsViewController, didSelectStation station: Station) {
+    func stationsViewController(_ viewController: StationsViewController, didSelectStation station: Station, isFavStation: Bool) {
         currentStation = nil
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            self.fpc.move(to: .half, animated: true)
+        if isFavStation {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.fpc.move(to: .half, animated: true)
+            }
         }
         
         setCurrentStation(station: station)
-        radioPlayer.player.play()
+        radioPlayer.fplayer.play()
     }
     
     func stationsViewController(_ viewController: StationsViewController, didFavStation station: Station) {
@@ -327,6 +321,7 @@ extension NowPlayingViewController: RadioPlayerDelegate {
             
         case .playing:
             print( "playbackStateDidChange: PLAYING" )
+
             break
             
         case .stopped:
@@ -367,30 +362,78 @@ extension NowPlayingViewController: RadioPlayerDelegate {
 
             self.setupAirplayPicker()
         }
-
-        print( "PORT DID CHANGE", portType.rawValue, portName)
     }
     
     func rawMetadataDidChange(_ metadata: String?) {
-        guard let metadata = metadata else { return }
+        //guard let metadata = metadata else { return }
     }
 }
-
-//extension NowPlayingViewController: AVRoutePickerViewDelegate {
-//
-//}
 
 extension NowPlayingViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
         searchBar.showsCancelButton  = false
         fpc.move(to: .half, animated: true)
+        
+        self.stationsVC.recommendedStations = []
+        self.stationsVC.favoriteStationsCaretaker.reload()
+        self.stationsVC.tableView.reloadData()
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         searchBar.showsCancelButton = true
-        stationsVC.tableView.alpha = 1.0
         fpc.move(to: .full, animated: true)
+        
+        RadioTimeStationProviderStrategy().getRecommendedStations { (stations, error) in
+            guard let stations = stations else { return }
+            self.stationsVC.recommendedStations = stations
+            
+            DispatchQueue.main.async {
+                self.stationsVC.tableView.reloadData()
+            }
+        }
+        
+        //stationsVC.tableViewTopConstraint.constant = stationsVC.tableViewTopConstraint.constant + 15
+//        UIView.animate(withDuration: 0, delay: 0, animations: {
+//            self.stationsVC.tableView.layoutIfNeeded()
+//            self.stationsVC.tableView.layer.opacity = 0
+//        }) { (result) in
+//            //self.stationsVC.tableViewTopConstraint.constant = self.stationsVC.tableViewTopConstraint.constant - 15
+//
+//            UIView.animate(withDuration: 0.2, delay: 0, animations: {
+//                self.stationsVC.tableView.layoutIfNeeded()
+//                self.stationsVC.tableView.layer.opacity = 1
+//            })
+//        }
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText == "" {
+            stationsVC.foundStations = []
+            stationsVC.tableView.reloadData()
+            return
+        }
+        
+        NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(self.reload(_:)), object: searchBar)
+        perform(#selector(self.reload(_:)), with: searchBar, afterDelay: 0.65)
+    }
+    
+    @objc func reload(_ searchBar: UISearchBar) {
+        guard let searchText = searchBar.text else { return }
+        
+        RadioTimeStationProviderStrategy().getStations(for: searchText) { radioStations, error in
+            if error != nil {
+                return
+            }
+            
+            if let results = radioStations {
+                self.stationsVC.foundStations = results
+                
+                DispatchQueue.main.async {
+                    self.stationsVC.tableView.reloadData()
+                }
+            }
+        }
     }
 }
 
