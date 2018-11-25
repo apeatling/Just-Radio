@@ -20,8 +20,8 @@ class FloatingPanel: NSObject, UIGestureRecognizerDelegate, UIScrollViewDelegate
         didSet {
             guard let scrollView = scrollView else { return }
             scrollView.panGestureRecognizer.addTarget(self, action: #selector(handle(panGesture:)))
-            scrollBouncable = scrollView.bounces
-            scrollIndictorVisible = scrollView.showsVerticalScrollIndicator
+            scrollBouncable = true
+            scrollIndictorVisible = true
         }
     }
     weak var userScrollViewDelegate: UIScrollViewDelegate?
@@ -218,7 +218,7 @@ class FloatingPanel: NSObject, UIGestureRecognizerDelegate, UIScrollViewDelegate
 
     @objc func handle(panGesture: UIPanGestureRecognizer) {
         log.debug("Gesture >>>>", panGesture)
-
+        
         switch panGesture {
         case scrollView?.panGestureRecognizer:
             guard let scrollView = scrollView else { return }

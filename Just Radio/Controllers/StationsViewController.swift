@@ -144,17 +144,18 @@ extension StationsViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "StationTableViewCell", for: indexPath) as! StationTableViewCell
         let station = stations[indexPath.row]
         
+        cell.favButton.isHidden = true
         if currentStation != nil && station.url == currentStation.url {
             cell.isCurrentStation = true
         }
         cell.isRadioPlaying = radioPlayer.fplayer.isPlaying
-        cell.hideFavButton = false
         
-        if StationsTableViewSections(rawValue: indexPath.section) == .favorites {
-            cell.hideFavButton = true
+        if StationsTableViewSections(rawValue: indexPath.section) != .favorites {
+            cell.showFavButton = true
         }
         
-        cell.configure(station: station)
+        let showBorder = (tableView.numberOfRows(inSection: indexPath.section) - 1) != indexPath.row
+        cell.configure(station: station, showBorder: showBorder)
         
         return cell
     }
@@ -175,14 +176,26 @@ extension StationsViewController: UITableViewDelegate {
         
         var station:Station!
         var isFavStation = false
+        var moveStationToTop = false
         
         switch StationsTableViewSections(rawValue: indexPath.section) {
-        case .searchResults?: station = foundStations[indexPath.row]
+        case .searchResults?:
+            station = foundStations[indexPath.row]
+            break
         case .favorites?:
             station = favoriteStations[indexPath.row]
+            favoriteStations.remove(at: indexPath.row)
+            favoriteStations.insert(station, at: 0)
+            try? favoriteStationsCaretaker.save()
+            
             isFavStation = true
-        case .recommended?: station = recommendedStations[indexPath.row]
-        case .none: return
+            moveStationToTop = true
+            break
+        case .recommended?:
+            station = recommendedStations[indexPath.row]
+            break
+        case .none:
+            return
         }
         
         let cells = tableView.visibleCells as! Array<StationTableViewCell>
@@ -192,13 +205,43 @@ extension StationsViewController: UITableViewDelegate {
 
         let cell = tableView.cellForRow(at: indexPath) as! StationTableViewCell
             cell.isCurrentStation = true
-            cell.hideFavButton = isFavStation ? true : false
+            cell.showFavButton = isFavStation ? false : true
             cell.isRadioPlaying = radioPlayer.fplayer.isPlaying
-
+        
+        if moveStationToTop {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.75) {
+//                CATransaction.begin()
+//                CATransaction.setCompletionBlock {
+//                    //self.tableView.reloadData()
+//                }
+                self.tableView.moveRow(at: indexPath, to: IndexPath(row: 0, section: indexPath.section))
+                //CATransaction.commit()
+            }
+        }
+        
         delegate?.stationsViewController(self, didSelectStation: station, isFavStation: isFavStation)
+    }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        switch StationsTableViewSections(rawValue: indexPath.section) {
+            case .favorites?: return true
+            default: return false
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let remove = UITableViewRowAction(style: .destructive, title: "Remove") { (action, indexPath) in
+            // delete item at indexPath
+            self.favoriteStations.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        }
+        remove.backgroundColor = UIColor(red:0.82, green:0.12, blue:0.36, alpha:1)
+        
+        return [remove]
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         searchBar.resignFirstResponder()
+        searchBar.setShowsCancelButton(false, animated: true)
     }
 }

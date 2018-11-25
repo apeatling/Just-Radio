@@ -49,15 +49,18 @@ class StationTableViewCell: UITableViewCell {
             }
         }
     }
-    var hideFavButton = true
+    var showFavButton = false
     var isRadioPlaying = false
     
-    func configure(station: Station) {
+    func configure(station: Station, showBorder: Bool) {
         self.station = station
         
         self.selectionStyle = .none
         self.backgroundColor = .clear
-        self.addBorder()
+        
+        if showBorder {
+            self.addBorder()
+        }
         
         stationNameLabel.text = station.name
         stationDescLabel.text = station.description
@@ -67,10 +70,8 @@ class StationTableViewCell: UITableViewCell {
         }
         stationImageView.layer.cornerRadius = 10
         
-        favButton.isHidden = true
         favButton.imageView?.contentMode = .scaleAspectFit
-        
-        if !hideFavButton {
+        if showFavButton {
             favButton.isHidden = false
             station.isFav ? selectFavButton() : deselectFavButton()
         }
@@ -187,10 +188,13 @@ class StationTableViewCell: UITableViewCell {
         stationDescLabel.text  = nil
         stationImageView.image = nil
         isCurrentStation = false
+        showFavButton = false
         stationPlayingStatusView.isHidden = true
         stationPlayingStatusView.layer.opacity = 0
-        favButton.layer.opacity = 0.25
-        favButton.isHidden = false
-        self.border.removeFromSuperlayer()
+        favButton.isHidden = true
+        
+        if let border = self.border {
+            border.removeFromSuperlayer()
+        }
     }
 }

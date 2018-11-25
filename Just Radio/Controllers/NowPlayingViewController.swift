@@ -52,7 +52,7 @@ class NowPlayingViewController: UIViewController {
         fpc.surfaceView.shadowHidden = false
         fpc.set(contentViewController: stationsVC)
         fpc.track(scrollView: stationsVC.tableView)
-
+        
         albumArtImageView.layer.cornerRadius = 10
         albumArtImageView.clipsToBounds = true
 
@@ -62,6 +62,7 @@ class NowPlayingViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         fpc.addPanel(toParent: self, animated: false)
+
         radioPlayer.delegate = self
         
         stationsVC.searchBar.delegate = self
@@ -263,13 +264,14 @@ class NowPlayingViewController: UIViewController {
 extension NowPlayingViewController: StationsViewControllerDelegate {
     func stationsViewController(_ viewController: StationsViewController, didSelectStation station: Station, isFavStation: Bool) {
         currentStation = nil
-        
+
         if isFavStation {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 self.fpc.move(to: .half, animated: true)
+                self.stationsVC.tableView.setContentOffset(.zero, animated: false)
             }
         }
-        
+
         setCurrentStation(station: station)
         radioPlayer.fplayer.play()
     }
@@ -371,8 +373,8 @@ extension NowPlayingViewController: RadioPlayerDelegate {
 
 extension NowPlayingViewController: UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.resignFirstResponder()
-        searchBar.showsCancelButton  = false
+        stationsVC.searchBar.resignFirstResponder()
+        stationsVC.searchBar.setShowsCancelButton(false, animated: true)
         fpc.move(to: .half, animated: true)
         
         self.stationsVC.recommendedStations = []
@@ -381,8 +383,13 @@ extension NowPlayingViewController: UISearchBarDelegate {
     }
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        searchBar.showsCancelButton = true
+        stationsVC.searchBar.setShowsCancelButton(true, animated: true)
         fpc.move(to: .full, animated: true)
+        self.stationsVC.tableView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: false)
+        
+        if !self.stationsVC.recommendedStations.isEmpty {
+            return
+        }
         
         RadioTimeStationProviderStrategy().getRecommendedStations { (stations, error) in
             guard let stations = stations else { return }
@@ -444,8 +451,18 @@ extension NowPlayingViewController: FloatingPanelControllerDelegate {
     
     func floatingPanelWillBeginDragging(_ vc: FloatingPanelController) {
         if vc.position == .full {
-            stationsVC.searchBar.showsCancelButton = false
+            stationsVC.searchBar.setShowsCancelButton(false, animated: true)
             stationsVC.searchBar.resignFirstResponder()
+        }
+    }
+    
+    func floatingPanelDidEndDragging(_ vc: FloatingPanelController, withVelocity velocity: CGPoint, targetPosition: FloatingPanelPosition) {
+        if targetPosition != .full {
+            stationsVC.foundStations = []
+            stationsVC.recommendedStations = []
+            
+            self.stationsVC.favoriteStationsCaretaker.reload()
+            stationsVC.tableView.reloadData()
         }
     }
 }
