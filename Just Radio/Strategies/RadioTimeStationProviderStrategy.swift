@@ -16,13 +16,16 @@ enum RadioTimeStationProviderStrategyError: Error {
     case invalidURL
 }
 
+// partnerId=RadioTime
+
 public class RadioTimeStationProviderStrategy: StationProviderStrategy {
     public var serviceName = "RadioTime"
+    private var params = "?partnerId=k2YHnXyS&filter=s:bit32*&render=json&formats=mp3,aac,ogg,flash,hls"
     public init() {}
     
     public func getStations(for searchTerms: String, completion: @escaping ([Station]?, _ error: Error?) -> ()) {
         guard let searchTermsEncoded = searchTerms.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed),
-              let url = URL(string: "http://opml.radiotime.com/Search.ashx?filter=s:bit32*&render=json&query=\(searchTermsEncoded)") else {
+              let url = URL(string: "http://opml.radiotime.com/Search.ashx\(params)&render=json&query=\(searchTermsEncoded)") else {
             
             if kDebugLog { print( "invalid API URL" ) }
             completion(nil, RadioTimeStationProviderStrategyError.invalidURL)
@@ -52,10 +55,10 @@ public class RadioTimeStationProviderStrategy: StationProviderStrategy {
     }
     
     public func getRecommendedStations(completion: @escaping ([Station]?, Error?) -> ()) {
-        guard let url = URL(string: "http://opml.radiotime.com/Browse.ashx?c=trending&render=json") else {
-                if kDebugLog { print( "invalid API URL" ) }
-                completion(nil, RadioTimeStationProviderStrategyError.invalidURL)
-                return
+        guard let url = URL(string: "http://opml.radiotime.com/Browse.ashx\(params)&c=trending") else {
+            if kDebugLog { print( "invalid API URL" ) }
+            completion(nil, RadioTimeStationProviderStrategyError.invalidURL)
+            return
         }
         
         var radioStations:[Station] = []
@@ -97,7 +100,7 @@ public class RadioTimeStationProviderStrategy: StationProviderStrategy {
             
             var stationImageURL = ""
             if let imageURL = station["image"] {
-                stationImageURL = String(describing: imageURL)
+                stationImageURL = String(describing: imageURL).replacingOccurrences(of: "q.png", with: "g.png")
             }
             
             var stationDescription = ""
@@ -106,19 +109,7 @@ public class RadioTimeStationProviderStrategy: StationProviderStrategy {
             }
             
             let stationURL = String(describing: streamURL)
-            var isFavStation = false
             
-            // Is this a fav station?
-            let stationCaretaker = FavoriteStationsCaretaker()
-            
-            if let favStations = stationCaretaker.stations {
-                for favStation in favStations {
-                    if favStation.url == stationURL {
-                        isFavStation = true
-                    }
-                }
-            }
-
             radioStations.append(Station(name: String(describing: name),
                                          url: stationURL,
                                          image: stationImageURL,
@@ -127,10 +118,25 @@ public class RadioTimeStationProviderStrategy: StationProviderStrategy {
                                          region: "",
                                          country: "",
                                          tags: [],
-                                         isFav: isFavStation))
+                                         isFav: self.isFav(stationURL)))
         }
         
         return radioStations
+    }
+    
+    private func isFav(_ stationURL: String) -> Bool {
+        let stationCaretaker = FavoriteStationsCaretaker()
+        var isFavStation = false
+        
+        if let favStations = stationCaretaker.stations {
+            for favStation in favStations {
+                if favStation.url == stationURL {
+                    isFavStation = true
+                }
+            }
+        }
+        
+        return isFavStation
     }
 }
 

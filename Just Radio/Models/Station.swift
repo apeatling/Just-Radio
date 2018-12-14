@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-public struct Station: Codable {
+public struct Station: Codable, Equatable {
     var name: String
     var url: String
     var image: String

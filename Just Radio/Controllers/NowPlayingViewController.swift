@@ -268,7 +268,7 @@ extension NowPlayingViewController: StationsViewControllerDelegate {
         if isFavStation {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 self.fpc.move(to: .half, animated: true)
-                self.stationsVC.tableView.setContentOffset(.zero, animated: false)
+                self.stationsVC.tableView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: false)
             }
         }
 
@@ -376,6 +376,7 @@ extension NowPlayingViewController: UISearchBarDelegate {
         stationsVC.searchBar.resignFirstResponder()
         stationsVC.searchBar.setShowsCancelButton(false, animated: true)
         fpc.move(to: .half, animated: true)
+        self.stationsVC.tableView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: false)
         
         self.stationsVC.recommendedStations = []
         self.stationsVC.favoriteStationsCaretaker.reload()
@@ -416,6 +417,7 @@ extension NowPlayingViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText == "" {
+            self.stationsVC.tableView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: false)
             stationsVC.foundStations = []
             stationsVC.tableView.reloadData()
             return

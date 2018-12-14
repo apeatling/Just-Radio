@@ -16,6 +16,7 @@ protocol StationsViewControllerDelegate: class {
 }
 
 enum StationsTableViewSections: Int {
+    case nowPlaying
     case searchResults
     case recommended
     case favorites
@@ -24,7 +25,7 @@ enum StationsTableViewSections: Int {
         self.init(rawValue: indexPath.section)
     }
     
-    static var numberOfSections: Int { return 3 }
+    static var numberOfSections: Int { return 4 }
 }
 
 class StationsViewController: UIViewController {
@@ -81,7 +82,7 @@ extension StationsViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if self.tableView(tableView, numberOfRowsInSection: section) == 0 {
+        if self.tableView(tableView, numberOfRowsInSection: section) == 0 || section == StationsTableViewSections.nowPlaying.rawValue {
             return .leastNormalMagnitude
         }
         return 30.0
@@ -100,6 +101,7 @@ extension StationsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch StationsTableViewSections(rawValue: section) {
+            case .nowPlaying?: return ( favoriteStations.contains(currentStation) ) ? 0 : 1
             case .searchResults?: return foundStations.count
             case .favorites?: return favoriteStations.count
             case .recommended?: return recommendedStations.count
@@ -117,6 +119,7 @@ extension StationsViewController: UITableViewDataSource {
             label.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         
         switch StationsTableViewSections(rawValue: section) {
+        case .nowPlaying?: label.text = ""
         case .searchResults?: label.text = "Matching Stations"
         case .favorites?: label.text = "Favorite Stations"
         case .recommended?: label.text = "Recommended Stations"
@@ -129,6 +132,7 @@ extension StationsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch StationsTableViewSections(rawValue: indexPath.section) {
+            case .nowPlaying?: return ( favoriteStations.contains(currentStation) ) ? emptyCell() : getCell(stations: [currentStation], indexPath: indexPath)
             case .searchResults?: return getCell(stations: foundStations, indexPath: indexPath)
             case .favorites?: return getCell(stations: favoriteStations, indexPath: indexPath)
             case .recommended?: return getCell(stations: recommendedStations, indexPath: indexPath)
@@ -179,14 +183,14 @@ extension StationsViewController: UITableViewDelegate {
         var moveStationToTop = false
         
         switch StationsTableViewSections(rawValue: indexPath.section) {
+        case .nowPlaying?:
+            station = currentStation
+            break
         case .searchResults?:
             station = foundStations[indexPath.row]
             break
         case .favorites?:
             station = favoriteStations[indexPath.row]
-            favoriteStations.remove(at: indexPath.row)
-            favoriteStations.insert(station, at: 0)
-            try? favoriteStationsCaretaker.save()
             
             isFavStation = true
             moveStationToTop = true
@@ -210,12 +214,18 @@ extension StationsViewController: UITableViewDelegate {
         
         if moveStationToTop {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.75) {
-//                CATransaction.begin()
-//                CATransaction.setCompletionBlock {
-//                    //self.tableView.reloadData()
-//                }
+                self.tableView.beginUpdates()
+                
+                if self.tableView.numberOfRows(inSection: StationsTableViewSections.nowPlaying.rawValue) > 0 {
+                    self.tableView.deleteRows(at: [IndexPath(row: 0, section: StationsTableViewSections.nowPlaying.rawValue)], with: .automatic)
+                }
+                
                 self.tableView.moveRow(at: indexPath, to: IndexPath(row: 0, section: indexPath.section))
-                //CATransaction.commit()
+                self.favoriteStations.remove(at: indexPath.row)
+                self.favoriteStations.insert(station, at: 0)
+                try? self.favoriteStationsCaretaker.save()
+
+                self.tableView.endUpdates()
             }
         }
         
