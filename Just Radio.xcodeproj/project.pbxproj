@@ -62,6 +62,8 @@
 		BA4D7E4821A61FF000DED6FC /* NVActivityIndicatorAnimationBallPulseRise.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4D7E2121A61FF000DED6FC /* NVActivityIndicatorAnimationBallPulseRise.swift */; };
 		BA4D7E4921A61FF000DED6FC /* NVActivityIndicatorAnimationOrbit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4D7E2221A61FF000DED6FC /* NVActivityIndicatorAnimationOrbit.swift */; };
 		BA4D7E4F21A73AB600DED6FC /* UIView+AddBorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4D7E4E21A73AB600DED6FC /* UIView+AddBorder.swift */; };
+		BA6BD81721C46BF50046DCA4 /* Array+RemovingDuplicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6BD81621C46BF50046DCA4 /* Array+RemovingDuplicates.swift */; };
+		BA6BD81921C5B5420046DCA4 /* StationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6BD81821C5B5420046DCA4 /* StationHelper.swift */; };
 		BABC116B2192A00500EDE169 /* FloatingPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABC11602192A00400EDE169 /* FloatingPanel.swift */; };
 		BABC116C2192A00500EDE169 /* FloatingPanelBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABC11612192A00500EDE169 /* FloatingPanelBehavior.swift */; };
 		BABC116D2192A00500EDE169 /* GrabberHandleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABC11622192A00500EDE169 /* GrabberHandleView.swift */; };
@@ -170,6 +172,8 @@
 		BA4D7E2121A61FF000DED6FC /* NVActivityIndicatorAnimationBallPulseRise.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NVActivityIndicatorAnimationBallPulseRise.swift; sourceTree = "<group>"; };
 		BA4D7E2221A61FF000DED6FC /* NVActivityIndicatorAnimationOrbit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NVActivityIndicatorAnimationOrbit.swift; sourceTree = "<group>"; };
 		BA4D7E4E21A73AB600DED6FC /* UIView+AddBorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AddBorder.swift"; sourceTree = "<group>"; };
+		BA6BD81621C46BF50046DCA4 /* Array+RemovingDuplicates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+RemovingDuplicates.swift"; sourceTree = "<group>"; };
+		BA6BD81821C5B5420046DCA4 /* StationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationHelper.swift; sourceTree = "<group>"; };
 		BABC11602192A00400EDE169 /* FloatingPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatingPanel.swift; sourceTree = "<group>"; };
 		BABC11612192A00500EDE169 /* FloatingPanelBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatingPanelBehavior.swift; sourceTree = "<group>"; };
 		BABC11622192A00500EDE169 /* GrabberHandleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GrabberHandleView.swift; sourceTree = "<group>"; };
@@ -428,6 +432,7 @@
 			isa = PBXGroup;
 			children = (
 				BA113C77218FB03F00AAADA3 /* RadioPlayer.swift */,
+				BA6BD81821C5B5420046DCA4 /* StationHelper.swift */,
 			);
 			path = Dependencies;
 			sourceTree = "<group>";
@@ -437,6 +442,7 @@
 			children = (
 				BAF5392D2197A193001CEA28 /* String+ConvertedToSlug.swift */,
 				BA4D7E4E21A73AB600DED6FC /* UIView+AddBorder.swift */,
+				BA6BD81621C46BF50046DCA4 /* Array+RemovingDuplicates.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -672,6 +678,7 @@
 				BA4D7E4321A61FF000DED6FC /* NVActivityIndicatorAnimationBallPulseSync.swift in Sources */,
 				BAF9C468218FB2DF004BC248 /* StationProviderStrategy.swift in Sources */,
 				BA113C74218FA56F00AAADA3 /* Station.swift in Sources */,
+				BA6BD81721C46BF50046DCA4 /* Array+RemovingDuplicates.swift in Sources */,
 				BA4D7E3421A61FF000DED6FC /* NVActivityIndicatorAnimationSemiCircleSpin.swift in Sources */,
 				BA4D7E3521A61FF000DED6FC /* NVActivityIndicatorAnimationBallScaleRipple.swift in Sources */,
 				BA4D7E2421A61FF000DED6FC /* NVActivityIndicatorPresenter.swift in Sources */,
@@ -688,6 +695,7 @@
 				BABC116D2192A00500EDE169 /* GrabberHandleView.swift in Sources */,
 				BA4D7E2621A61FF000DED6FC /* NVActivityIndicatorShape.swift in Sources */,
 				BA4D7E3821A61FF000DED6FC /* NVActivityIndicatorAnimationBallRotateChase.swift in Sources */,
+				BA6BD81921C5B5420046DCA4 /* StationHelper.swift in Sources */,
 				BAE617A921914CD10055DEFB /* StationsViewController.swift in Sources */,
 				BA4D7E3721A61FF000DED6FC /* NVActivityIndicatorAnimationSquareSpin.swift in Sources */,
 				BA4D7E4221A61FF000DED6FC /* NVActivityIndicatorAnimationPacman.swift in Sources */,

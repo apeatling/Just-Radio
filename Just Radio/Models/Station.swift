@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-public struct Station: Codable, Equatable {
+public struct Station: Codable, Equatable, Hashable {
     var name: String
     var url: String
     var image: String
@@ -21,9 +21,7 @@ public struct Station: Codable, Equatable {
     
     var tags: [String]
     
-    var isFav: Bool
-    
-    init(name: String, url: String, image: String, description: String, city: String, region: String, country: String, tags: [String] = [], isFav: Bool = false) {
+    init(name: String, url: String, image: String, description: String, city: String, region: String, country: String, tags: [String] = []) {
         self.name = name
         self.url = url
         self.image = image
@@ -34,8 +32,6 @@ public struct Station: Codable, Equatable {
         self.country = country
         
         self.tags = tags
-        
-        self.isFav = isFav
     }
     
     func getImage(completion: @escaping (_ image: UIImage?)->()) {

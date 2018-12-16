@@ -10,8 +10,13 @@ import Foundation
 import UIKit
 import AVFoundation
 
+protocol StationTableViewCellDelegate: class {
+    func StationTableViewCell(_ cell: StationTableViewCell, didFavStation station: Station)
+    func StationTableViewCell(_ cell: StationTableViewCell, didUnFavStation station: Station)
+}
+
 class StationTableViewCell: UITableViewCell {
-    
+
     // MARK: - Outlets
     @IBOutlet weak var stationNameLabel: UILabel!
     @IBOutlet weak var stationDescLabel: UILabel!
@@ -23,8 +28,10 @@ class StationTableViewCell: UITableViewCell {
     @IBOutlet weak var statusViewHeightConstraint: NSLayoutConstraint!
     
     // MARK: - Properties
+    var delegate: StationTableViewCellDelegate?
     var station:Station!
     var border:CALayer!
+    var favoriteStationsCaretaker: FavoriteStationsCaretaker!
 
     var isCurrentStation = false {
         didSet {
@@ -52,8 +59,10 @@ class StationTableViewCell: UITableViewCell {
     var showFavButton = false
     var isRadioPlaying = false
     
-    func configure(station: Station, showBorder: Bool) {
-        self.station = station
+    func configure(stationForCell: Station, radioPlayer: RadioPlayer, currentStation: Station?, favoriteStationsCaretaker: FavoriteStationsCaretaker, showBorder: Bool) {
+        self.favoriteStationsCaretaker = favoriteStationsCaretaker
+        self.station = stationForCell
+        self.isRadioPlaying = radioPlayer.fplayer.isPlaying
         
         self.selectionStyle = .none
         self.backgroundColor = .clear
@@ -71,21 +80,34 @@ class StationTableViewCell: UITableViewCell {
         stationImageView.layer.cornerRadius = 10
         
         favButton.imageView?.contentMode = .scaleAspectFit
-        if showFavButton {
-            favButton.isHidden = false
-            station.isFav ? selectFavButton() : deselectFavButton()
+        
+        if let favStations = favoriteStationsCaretaker.stations {
+            ( favStations.contains(self.station) ) ? selectFavButton() : deselectFavButton()
+        }
+        
+        if let currentStation = currentStation {
+            if currentStation == self.station {
+                self.isCurrentStation = true
+            }
         }
     }
     
     @IBAction func favButtonTapped(_ sender: Any) {
         UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
         
-        selectFavButton()
-        
-        let favoriteStationsCaretaker = FavoriteStationsCaretaker()
-            favoriteStationsCaretaker.stations?.append(self.station)
-        
-        try? favoriteStationsCaretaker.save()
+        if let favStations = favoriteStationsCaretaker.stations {
+            if favStations.contains(self.station) {
+                StationHelper.unfav(station, favoriteStationsCaretaker: favoriteStationsCaretaker)
+                
+                delegate?.StationTableViewCell(self, didUnFavStation: self.station)
+                deselectFavButton()
+            } else {
+                StationHelper.fav(station, favoriteStationsCaretaker: favoriteStationsCaretaker)
+                
+                delegate?.StationTableViewCell(self, didFavStation: self.station)
+                selectFavButton()
+            }
+        }
     }
     
     func selectFavButton() {
@@ -95,7 +117,7 @@ class StationTableViewCell: UITableViewCell {
     
     func deselectFavButton() {
         favButton.setImage(UIImage(named: "Fav Off"), for: .normal)
-        favButton.layer.opacity = 0.25
+        favButton.layer.opacity = 0.5
     }
     
     func showStatusIndicator() {
@@ -188,10 +210,8 @@ class StationTableViewCell: UITableViewCell {
         stationDescLabel.text  = nil
         stationImageView.image = nil
         isCurrentStation = false
-        showFavButton = false
         stationPlayingStatusView.isHidden = true
         stationPlayingStatusView.layer.opacity = 0
-        favButton.isHidden = true
         
         if let border = self.border {
             border.removeFromSuperlayer()

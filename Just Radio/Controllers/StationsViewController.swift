@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 protocol StationsViewControllerDelegate: class {
-    func stationsViewController(_ viewController: StationsViewController, didSelectStation station: Station, isFavStation: Bool)
+    func stationsViewController(_ viewController: StationsViewController, didSelectStation station: Station)
     func stationsViewController(_ viewController: StationsViewController, didFavStation station: Station)
     func stationsViewController(_ viewController: StationsViewController, didUnFavStation station: Station)
 }
@@ -39,10 +39,11 @@ class StationsViewController: UIViewController {
     
     // MARK: - Injected Dependencies
     weak var radioPlayer:RadioPlayer!
-    var currentStation:Station!
+    var nowPlayingVC: NowPlayingViewController!
+    var currentStation: Station!
+    var favoriteStationsCaretaker: FavoriteStationsCaretaker!
     
     // MARK: - Properties
-    let favoriteStationsCaretaker = FavoriteStationsCaretaker()
     var favoriteStations:[Station] {
         get {
             guard let stations = favoriteStationsCaretaker.stations else { return [] }
@@ -62,7 +63,7 @@ class StationsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         tableView.dataSource = self
         tableView.delegate = self
         tableView.separatorStyle = .none
@@ -73,6 +74,40 @@ class StationsViewController: UIViewController {
         searchBarContainerView.addBorder([.bottom], color: UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.1), width: 0.5)
         let textField = searchBar.value(forKey: "_searchField") as! UITextField
             textField.font = UIFont.systemFont(ofSize: 17)
+        
+        nowPlayingVC.delegate = self
+    }
+    
+    func favStation() {
+        self.tableView.beginUpdates()
+        
+        if self.tableView.numberOfRows(inSection: StationsTableViewSections.nowPlaying.rawValue) > 0 {
+            self.tableView.moveRow(at: IndexPath(row: 0, section: StationsTableViewSections.nowPlaying.rawValue), to: IndexPath(row: 0, section: StationsTableViewSections.favorites.rawValue))
+            
+            self.favoriteStationsCaretaker.reload()
+        }
+        
+        self.tableView.endUpdates()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.tableView.reloadRows(at: [IndexPath(row: 0, section: StationsTableViewSections.favorites.rawValue)], with: .fade)
+        }
+    }
+    
+    func unFavStation() {
+        self.tableView.beginUpdates()
+        
+        if self.tableView.numberOfRows(inSection: StationsTableViewSections.nowPlaying.rawValue) == 0 {
+            self.tableView.moveRow(at: IndexPath(row: 0, section: StationsTableViewSections.favorites.rawValue), to: IndexPath(row: 0, section: StationsTableViewSections.nowPlaying.rawValue))
+            
+            self.favoriteStationsCaretaker.reload()
+        }
+        
+        self.tableView.endUpdates()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.tableView.reloadRows(at: [IndexPath(row: 0, section: StationsTableViewSections.nowPlaying.rawValue)], with: .fade)
+        }
     }
 }
 
@@ -101,7 +136,9 @@ extension StationsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch StationsTableViewSections(rawValue: section) {
-            case .nowPlaying?: return ( favoriteStations.contains(currentStation) ) ? 0 : 1
+            case .nowPlaying?:
+                guard let currentStation = currentStation else { return 0 }
+                return ( favoriteStations.contains(currentStation) ) ? 0 : 1
             case .searchResults?: return foundStations.count
             case .favorites?: return favoriteStations.count
             case .recommended?: return recommendedStations.count
@@ -148,18 +185,22 @@ extension StationsViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "StationTableViewCell", for: indexPath) as! StationTableViewCell
         let station = stations[indexPath.row]
         
-        cell.favButton.isHidden = true
-        if currentStation != nil && station.url == currentStation.url {
-            cell.isCurrentStation = true
-        }
-        cell.isRadioPlaying = radioPlayer.fplayer.isPlaying
-        
-        if StationsTableViewSections(rawValue: indexPath.section) != .favorites {
-            cell.showFavButton = true
-        }
-        
         let showBorder = (tableView.numberOfRows(inSection: indexPath.section) - 1) != indexPath.row
-        cell.configure(station: station, showBorder: showBorder)
+        
+        cell.configure(stationForCell: station,
+                       radioPlayer: radioPlayer,
+                       currentStation: currentStation,
+                       favoriteStationsCaretaker: favoriteStationsCaretaker,
+                       showBorder: showBorder)
+        
+        cell.delegate = self
+ 
+        UIView.setAnimationsEnabled(false)
+        cell.favButton.isHidden = false
+        if StationsTableViewSections(rawValue: indexPath.section) == .favorites {
+            cell.favButton.isHidden = true
+        }
+        UIView.setAnimationsEnabled(true)
         
         return cell
     }
@@ -179,7 +220,6 @@ extension StationsViewController: UITableViewDelegate {
         searchBar.resignFirstResponder()
         
         var station:Station!
-        var isFavStation = false
         var moveStationToTop = false
         
         switch StationsTableViewSections(rawValue: indexPath.section) {
@@ -192,7 +232,6 @@ extension StationsViewController: UITableViewDelegate {
         case .favorites?:
             station = favoriteStations[indexPath.row]
             
-            isFavStation = true
             moveStationToTop = true
             break
         case .recommended?:
@@ -209,7 +248,6 @@ extension StationsViewController: UITableViewDelegate {
 
         let cell = tableView.cellForRow(at: indexPath) as! StationTableViewCell
             cell.isCurrentStation = true
-            cell.showFavButton = isFavStation ? false : true
             cell.isRadioPlaying = radioPlayer.fplayer.isPlaying
         
         if moveStationToTop {
@@ -229,7 +267,7 @@ extension StationsViewController: UITableViewDelegate {
             }
         }
         
-        delegate?.stationsViewController(self, didSelectStation: station, isFavStation: isFavStation)
+        delegate?.stationsViewController(self, didSelectStation: station)
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -253,5 +291,27 @@ extension StationsViewController: UITableViewDelegate {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         searchBar.resignFirstResponder()
         searchBar.setShowsCancelButton(false, animated: true)
+    }
+}
+
+extension StationsViewController: StationTableViewCellDelegate {
+    func StationTableViewCell(_ cell: StationTableViewCell, didFavStation station: Station) {
+        favStation()
+        delegate?.stationsViewController(self, didFavStation: station)
+    }
+    
+    func StationTableViewCell(_ cell: StationTableViewCell, didUnFavStation station: Station) {
+        unFavStation()
+        delegate?.stationsViewController(self, didUnFavStation: station)
+    }
+}
+
+extension StationsViewController: NowPlayingViewControllerDelegate {
+    func nowPlayingViewController(_ viewController: NowPlayingViewController, didFavStation station: Station) {
+        favStation()
+    }
+    
+    func nowPlayingViewController(_ viewController: NowPlayingViewController, didUnFavStation station: Station) {
+        unFavStation()
     }
 }

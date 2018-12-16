@@ -117,26 +117,10 @@ public class RadioTimeStationProviderStrategy: StationProviderStrategy {
                                          city: "",
                                          region: "",
                                          country: "",
-                                         tags: [],
-                                         isFav: self.isFav(stationURL)))
+                                         tags: []))
         }
         
         return radioStations
-    }
-    
-    private func isFav(_ stationURL: String) -> Bool {
-        let stationCaretaker = FavoriteStationsCaretaker()
-        var isFavStation = false
-        
-        if let favStations = stationCaretaker.stations {
-            for favStation in favStations {
-                if favStation.url == stationURL {
-                    isFavStation = true
-                }
-            }
-        }
-        
-        return isFavStation
     }
 }
 

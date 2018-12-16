@@ -28,6 +28,6 @@ public final class FavoriteStationsCaretaker {
 
     // MARK: - Instance Methods
     public func save() throws {
-        try UserDefaultsCaretaker.save(stations, key: key)
+        try UserDefaultsCaretaker.save(stations?.removingDuplicates(), key: key)
     }
 }

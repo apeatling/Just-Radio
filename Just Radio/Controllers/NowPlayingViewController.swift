@@ -9,12 +9,18 @@ import UIKit
 import MediaPlayer
 import AVKit
 
+protocol NowPlayingViewControllerDelegate: class {
+    func nowPlayingViewController(_ viewController: NowPlayingViewController, didFavStation station: Station)
+    func nowPlayingViewController(_ viewController: NowPlayingViewController, didUnFavStation station: Station)
+}
+
 class NowPlayingViewController: UIViewController {
-    
     // MARK: - Outlets
     @IBOutlet weak var albumArtImageView: UIImageView!
     @IBOutlet weak var trackNameLabel: UILabel!
     @IBOutlet weak var playPauseButton: UIButton!
+    @IBOutlet weak var favButton: UIButton!
+    @IBOutlet weak var moreButton: UIButton!
     @IBOutlet weak var airplayStackView: UIStackView!
     @IBOutlet weak var airplayButton: UIButton!
     @IBOutlet weak var airplayLabel: UILabel!
@@ -28,20 +34,24 @@ class NowPlayingViewController: UIViewController {
     @IBOutlet weak var trackNameTopConstraint: NSLayoutConstraint!
     
     // MARK: - Injected Dependencies
-    var radioPlayer:RadioPlayer!
+    var radioPlayer: RadioPlayer!
     
     // MARK: - Properties
+    var delegate: NowPlayingViewControllerDelegate?
     var fpc: FloatingPanelController!
     var stationsVC: StationsViewController!
-    var currentStation:Station!
-    var currentTrack:Track!
+    var currentStation: Station!
+    var currentTrack: Track!
     var isShowingTrackLabel = false
+    var favoriteStationsCaretaker = FavoriteStationsCaretaker()
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         stationsVC = storyboard?.instantiateViewController(withIdentifier: "StationsViewController") as? StationsViewController
+        stationsVC.nowPlayingVC = self
         stationsVC.radioPlayer = self.radioPlayer
+        stationsVC.favoriteStationsCaretaker = self.favoriteStationsCaretaker
         
         setCurrentStation(station: nil)
  
@@ -94,6 +104,12 @@ class NowPlayingViewController: UIViewController {
         stationsVC.currentStation = currentStation
         radioPlayer.station = currentStation
         radioPlayer.fplayer.radioURL = URL(string: currentStation.url)
+        
+        if StationHelper.isFav(currentStation, favoriteStationsCaretaker: favoriteStationsCaretaker) {
+            selectFavButton()
+        } else {
+            deselectFavButton()
+        }
     }
     
     private func setCurrentTrack(track: Track) {
@@ -190,15 +206,6 @@ class NowPlayingViewController: UIViewController {
     func setupAirplayPicker() {
         self.airplayStackView.isHidden = false
 
-// TURNED OFF - API DOES NOT SEEM RELIABLE
-//        let routeDetector = AVRouteDetector()
-//            routeDetector.isRouteDetectionEnabled = true
-//
-//        if !routeDetector.multipleRoutesDetected {
-//            print( "NO AIRPLAY ROUTES: HIDE PICKER" )
-//            self.airplayStackView.isHidden = true
-//        }
-
         // Add airplay picker to button
         self.airplayStackView.subviews.forEach({ if $0 is AVRoutePickerView { $0.removeFromSuperview() } })
         self.airplayStackView.autoresizesSubviews = true
@@ -251,21 +258,56 @@ class NowPlayingViewController: UIViewController {
         }) { (complete) in }
     }
     
+    func selectFavButton() {
+        favButton.setImage(UIImage(named: "Fav On"), for: .normal)
+        favButton.layer.opacity = 1
+    }
+    
+    func deselectFavButton() {
+        favButton.setImage(UIImage(named: "Fav Off"), for: .normal)
+        favButton.layer.opacity = 0.5
+    }
+    
     // MARK: - Actions
     @IBAction func tappedPlayPauseButton(_ sender: Any) {
+        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+        
         if radioPlayer.fplayer.isPlaying {
             radioPlayer.fplayer.stop()
         } else {
             radioPlayer.fplayer.play()
         }
     }
+    
+    @IBAction func tappedFavButton(_ sender: Any) {
+        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+        
+        if let favStations = favoriteStationsCaretaker.stations, let station = self.currentStation {
+            if favStations.contains(station) {
+                StationHelper.unfav(station, favoriteStationsCaretaker: favoriteStationsCaretaker)
+                deselectFavButton()
+                
+                delegate?.nowPlayingViewController(self, didUnFavStation: station)
+            } else {
+                StationHelper.fav(station, favoriteStationsCaretaker: favoriteStationsCaretaker)
+                selectFavButton()
+                
+                delegate?.nowPlayingViewController(self, didFavStation: station)
+            }
+        }
+    }
+    
+    @IBAction func tappedMoreButton(_ sender: Any) {
+        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+        
+    }
 }
 
 extension NowPlayingViewController: StationsViewControllerDelegate {
-    func stationsViewController(_ viewController: StationsViewController, didSelectStation station: Station, isFavStation: Bool) {
+    func stationsViewController(_ viewController: StationsViewController, didSelectStation station: Station) {
         currentStation = nil
 
-        if isFavStation {
+        if StationHelper.isFav(station, favoriteStationsCaretaker: favoriteStationsCaretaker) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 self.fpc.move(to: .half, animated: true)
                 self.stationsVC.tableView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: false)
@@ -277,11 +319,11 @@ extension NowPlayingViewController: StationsViewControllerDelegate {
     }
     
     func stationsViewController(_ viewController: StationsViewController, didFavStation station: Station) {
-        
+        selectFavButton()
     }
     
     func stationsViewController(_ viewController: StationsViewController, didUnFavStation station: Station) {
-        
+        deselectFavButton()
     }
 }
 
@@ -379,7 +421,7 @@ extension NowPlayingViewController: UISearchBarDelegate {
         self.stationsVC.tableView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: false)
         
         self.stationsVC.recommendedStations = []
-        self.stationsVC.favoriteStationsCaretaker.reload()
+        self.favoriteStationsCaretaker.reload()
         self.stationsVC.tableView.reloadData()
     }
     
@@ -400,19 +442,6 @@ extension NowPlayingViewController: UISearchBarDelegate {
                 self.stationsVC.tableView.reloadData()
             }
         }
-        
-        //stationsVC.tableViewTopConstraint.constant = stationsVC.tableViewTopConstraint.constant + 15
-//        UIView.animate(withDuration: 0, delay: 0, animations: {
-//            self.stationsVC.tableView.layoutIfNeeded()
-//            self.stationsVC.tableView.layer.opacity = 0
-//        }) { (result) in
-//            //self.stationsVC.tableViewTopConstraint.constant = self.stationsVC.tableViewTopConstraint.constant - 15
-//
-//            UIView.animate(withDuration: 0.2, delay: 0, animations: {
-//                self.stationsVC.tableView.layoutIfNeeded()
-//                self.stationsVC.tableView.layer.opacity = 1
-//            })
-//        }
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -463,7 +492,7 @@ extension NowPlayingViewController: FloatingPanelControllerDelegate {
             stationsVC.foundStations = []
             stationsVC.recommendedStations = []
             
-            self.stationsVC.favoriteStationsCaretaker.reload()
+            self.favoriteStationsCaretaker.reload()
             stationsVC.tableView.reloadData()
         }
     }
