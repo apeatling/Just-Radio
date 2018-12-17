@@ -63,7 +63,7 @@
                                             </constraints>
                                         </imageView>
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="QfW-Fz-6xu">
-                                            <rect key="frame" x="15" y="428" width="384" height="44"/>
+                                            <rect key="frame" x="15" y="452" width="384" height="44"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" alignment="center" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2T6-Vd-EFJ">
                                                     <rect key="frame" x="170" y="0.0" width="44" height="44"/>
@@ -89,19 +89,20 @@
                                                 </stackView>
                                             </subviews>
                                         </stackView>
-                                        <button opaque="NO" alpha="0.75" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vrc-Eg-Nbw">
-                                            <rect key="frame" x="189.5" y="357" width="35" height="41"/>
+                                        <button opaque="NO" alpha="0.75" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vrc-Eg-Nbw" customClass="UIReactiveButton" customModule="Just_Radio" customModuleProvider="target">
+                                            <rect key="frame" x="174.5" y="357" width="65" height="65"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="41" id="8VG-a6-GdK"/>
-                                                <constraint firstAttribute="width" constant="35" id="vUk-Q2-JNf"/>
+                                                <constraint firstAttribute="height" constant="65" id="8VG-a6-GdK"/>
+                                                <constraint firstAttribute="width" constant="65" id="vUk-Q2-JNf"/>
                                             </constraints>
+                                            <inset key="imageEdgeInsets" minX="7" minY="0.0" maxX="0.0" maxY="0.0"/>
                                             <state key="normal" image="Play"/>
                                             <connections>
                                                 <action selector="tappedPlayPauseButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="LRo-wE-z1i"/>
                                             </connections>
                                         </button>
                                         <button opaque="NO" alpha="0.5" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L7h-O3-puS">
-                                            <rect key="frame" x="73.5" y="355.5" width="44" height="44"/>
+                                            <rect key="frame" x="58.5" y="367.5" width="44" height="44"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="44" id="KCs-8D-GVK"/>
                                                 <constraint firstAttribute="width" constant="44" id="zTn-T1-B7W"/>
@@ -112,7 +113,7 @@
                                             </connections>
                                         </button>
                                         <button opaque="NO" alpha="0.5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NCK-bh-Y5C">
-                                            <rect key="frame" x="296.5" y="355.5" width="44" height="44"/>
+                                            <rect key="frame" x="311.5" y="367.5" width="44" height="44"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="44" id="S5k-xl-FHR"/>
                                                 <constraint firstAttribute="width" constant="44" id="eK4-aa-GEj"/>

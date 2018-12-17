@@ -18,7 +18,7 @@ class NowPlayingViewController: UIViewController {
     // MARK: - Outlets
     @IBOutlet weak var albumArtImageView: UIImageView!
     @IBOutlet weak var trackNameLabel: UILabel!
-    @IBOutlet weak var playPauseButton: UIButton!
+    @IBOutlet weak var playPauseButton: UIReactiveButton!
     @IBOutlet weak var favButton: UIButton!
     @IBOutlet weak var moreButton: UIButton!
     @IBOutlet weak var airplayStackView: UIStackView!
@@ -272,11 +272,11 @@ class NowPlayingViewController: UIViewController {
     @IBAction func tappedPlayPauseButton(_ sender: Any) {
         UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
         
-        if radioPlayer.fplayer.isPlaying {
-            radioPlayer.fplayer.stop()
-        } else {
-            radioPlayer.fplayer.play()
-        }
+//        if radioPlayer.fplayer.isPlaying {
+//            radioPlayer.fplayer.stop()
+//        } else {
+//            radioPlayer.fplayer.play()
+//        }
     }
     
     @IBAction func tappedFavButton(_ sender: Any) {
@@ -340,7 +340,7 @@ extension NowPlayingViewController: RadioPlayerDelegate {
             
         case .readyToPlay:
             print( "playerStateDidChange: READY TO PLAY" )
-            playPauseButton.setImage(UIImage(named: "Pause"), for: .normal)
+            //playPauseButton.setImage(UIImage(named: "Pause"), for: .normal)
             break
             
         case .urlNotSet:
@@ -360,7 +360,7 @@ extension NowPlayingViewController: RadioPlayerDelegate {
         switch playbackState {
         case .paused:
             print( "playbackStateDidChange: PAUSED" )
-            playPauseButton.setImage(UIImage(named: "Play"), for: .normal)
+            //playPauseButton.setImage(UIImage(named: "Play"), for: .normal)
             break
             
         case .playing:
@@ -370,7 +370,7 @@ extension NowPlayingViewController: RadioPlayerDelegate {
             
         case .stopped:
             print( "playbackStateDidChange: STOPPED" )
-            playPauseButton.setImage(UIImage(named: "Play"), for: .normal)
+            //playPauseButton.setImage(UIImage(named: "Play"), for: .normal)
             break
             
         default:

@@ -64,6 +64,7 @@
 		BA4D7E4F21A73AB600DED6FC /* UIView+AddBorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4D7E4E21A73AB600DED6FC /* UIView+AddBorder.swift */; };
 		BA6BD81721C46BF50046DCA4 /* Array+RemovingDuplicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6BD81621C46BF50046DCA4 /* Array+RemovingDuplicates.swift */; };
 		BA6BD81921C5B5420046DCA4 /* StationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6BD81821C5B5420046DCA4 /* StationHelper.swift */; };
+		BA6BD81B21C70FFA0046DCA4 /* UIReactiveButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6BD81A21C70FFA0046DCA4 /* UIReactiveButton.swift */; };
 		BABC116B2192A00500EDE169 /* FloatingPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABC11602192A00400EDE169 /* FloatingPanel.swift */; };
 		BABC116C2192A00500EDE169 /* FloatingPanelBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABC11612192A00500EDE169 /* FloatingPanelBehavior.swift */; };
 		BABC116D2192A00500EDE169 /* GrabberHandleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABC11622192A00500EDE169 /* GrabberHandleView.swift */; };
@@ -174,6 +175,7 @@
 		BA4D7E4E21A73AB600DED6FC /* UIView+AddBorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AddBorder.swift"; sourceTree = "<group>"; };
 		BA6BD81621C46BF50046DCA4 /* Array+RemovingDuplicates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+RemovingDuplicates.swift"; sourceTree = "<group>"; };
 		BA6BD81821C5B5420046DCA4 /* StationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationHelper.swift; sourceTree = "<group>"; };
+		BA6BD81A21C70FFA0046DCA4 /* UIReactiveButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIReactiveButton.swift; sourceTree = "<group>"; };
 		BABC11602192A00400EDE169 /* FloatingPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatingPanel.swift; sourceTree = "<group>"; };
 		BABC11612192A00500EDE169 /* FloatingPanelBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatingPanelBehavior.swift; sourceTree = "<group>"; };
 		BABC11622192A00500EDE169 /* GrabberHandleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GrabberHandleView.swift; sourceTree = "<group>"; };
@@ -443,6 +445,7 @@
 				BAF5392D2197A193001CEA28 /* String+ConvertedToSlug.swift */,
 				BA4D7E4E21A73AB600DED6FC /* UIView+AddBorder.swift */,
 				BA6BD81621C46BF50046DCA4 /* Array+RemovingDuplicates.swift */,
+				BA6BD81A21C70FFA0046DCA4 /* UIReactiveButton.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -656,6 +659,7 @@
 				BABC116B2192A00500EDE169 /* FloatingPanel.swift in Sources */,
 				BABC11732192A00500EDE169 /* FloatingPanelSurfaceView.swift in Sources */,
 				BAF9C467218FB2DF004BC248 /* DirbleStationProviderStrategy.swift in Sources */,
+				BA6BD81B21C70FFA0046DCA4 /* UIReactiveButton.swift in Sources */,
 				BABC116C2192A00500EDE169 /* FloatingPanelBehavior.swift in Sources */,
 				BA4D7E2D21A61FF000DED6FC /* NVActivityIndicatorAnimationBallTrianglePath.swift in Sources */,
 				BACA0BA521A3D2FC007C6057 /* Bar.swift in Sources */,
