@@ -230,7 +230,6 @@ extension StationsViewController: UITableViewDataSource {
 
 extension StationsViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
         searchBar.resignFirstResponder()
         
         var station:Station!
@@ -265,6 +264,8 @@ extension StationsViewController: UITableViewDelegate {
             cell.isRadioPlaying = radioPlayer.fplayer.isPlaying
         
         if moveStationToTop {
+            self.tableView.isUserInteractionEnabled = false
+            
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.75) {
                 self.tableView.beginUpdates()
                 
@@ -278,6 +279,7 @@ extension StationsViewController: UITableViewDelegate {
                 try? self.favoriteStationsCaretaker.save()
 
                 self.tableView.endUpdates()
+                self.tableView.isUserInteractionEnabled = true
             }
         }
         
