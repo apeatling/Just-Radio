@@ -107,6 +107,8 @@ class StationTableViewCell: UITableViewCell {
                 delegate?.StationTableViewCell(self, didFavStation: self.station)
                 selectFavButton()
             }
+            
+            favoriteStationsCaretaker.reload()
         }
     }
     

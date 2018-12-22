@@ -412,8 +412,10 @@ extension NowPlayingViewController: UISearchBarDelegate {
         stationsVC.searchBar.setShowsCancelButton(false, animated: true)
         fpc.move(to: .half, animated: true)
         self.stationsVC.tableView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 1, height: 1), animated: false)
+        searchBar.text? = ""
         
         self.stationsVC.recommendedStations = []
+        self.stationsVC.foundStations = []
         self.favoriteStationsCaretaker.reload()
         self.stationsVC.tableView.reloadData()
     }

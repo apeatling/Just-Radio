@@ -79,6 +79,9 @@ class StationsViewController: UIViewController {
     }
     
     func favStation() {
+        // These updates only apply to the favorite stations screen
+        if self.tableView.numberOfRows(inSection: StationsTableViewSections.recommended.rawValue) > 0 { return }
+        
         self.tableView.beginUpdates()
         
         if self.tableView.numberOfRows(inSection: StationsTableViewSections.nowPlaying.rawValue) > 0 {
@@ -95,6 +98,9 @@ class StationsViewController: UIViewController {
     }
     
     func unFavStation() {
+        // These updates only apply to the favorite stations screen
+        if self.tableView.numberOfRows(inSection: StationsTableViewSections.recommended.rawValue) > 0 { return }
+        
         self.tableView.beginUpdates()
         
         if self.tableView.numberOfRows(inSection: StationsTableViewSections.nowPlaying.rawValue) == 0 {
@@ -138,9 +144,12 @@ extension StationsViewController: UITableViewDataSource {
         switch StationsTableViewSections(rawValue: section) {
             case .nowPlaying?:
                 guard let currentStation = currentStation else { return 0 }
-                return ( favoriteStations.contains(currentStation) ) ? 0 : 1
+                if favoriteStations.contains(currentStation) || recommendedStations.count > 0 { return 0 }
+                return 1
             case .searchResults?: return foundStations.count
-            case .favorites?: return favoriteStations.count
+            case .favorites?:
+                if recommendedStations.count > 0 || foundStations.count > 0 { return 0 }
+                return favoriteStations.count
             case .recommended?: return recommendedStations.count
             case .none: return 0
         }
@@ -169,9 +178,14 @@ extension StationsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch StationsTableViewSections(rawValue: indexPath.section) {
-            case .nowPlaying?: return ( favoriteStations.contains(currentStation) ) ? emptyCell() : getCell(stations: [currentStation], indexPath: indexPath)
+            case .nowPlaying?:
+                guard let currentStation = currentStation else { return emptyCell() }
+                if favoriteStations.contains(currentStation) || recommendedStations.count > 0 { return emptyCell() }
+                return getCell(stations: [currentStation], indexPath: indexPath)
             case .searchResults?: return getCell(stations: foundStations, indexPath: indexPath)
-            case .favorites?: return getCell(stations: favoriteStations, indexPath: indexPath)
+            case .favorites?:
+                if recommendedStations.count > 0 || foundStations.count > 0 { return emptyCell() }
+                return getCell(stations: favoriteStations, indexPath: indexPath)
             case .recommended?: return getCell(stations: recommendedStations, indexPath: indexPath)
             case .none: return emptyCell()
         }
