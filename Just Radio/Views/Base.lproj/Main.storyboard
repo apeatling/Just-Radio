@@ -63,7 +63,7 @@
                                             </constraints>
                                         </imageView>
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="QfW-Fz-6xu">
-                                            <rect key="frame" x="15" y="452" width="384" height="44"/>
+                                            <rect key="frame" x="15" y="427" width="384" height="44"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" alignment="center" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2T6-Vd-EFJ">
                                                     <rect key="frame" x="170" y="0.0" width="44" height="44"/>
@@ -89,8 +89,8 @@
                                                 </stackView>
                                             </subviews>
                                         </stackView>
-                                        <button opaque="NO" alpha="0.75" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vrc-Eg-Nbw" customClass="UIReactiveButton" customModule="Just_Radio" customModuleProvider="target">
-                                            <rect key="frame" x="174.5" y="357" width="65" height="65"/>
+                                        <button opaque="NO" alpha="0.75" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vrc-Eg-Nbw" customClass="UIReactiveButton" customModule="Just_Radio" customModuleProvider="target">
+                                            <rect key="frame" x="174.5" y="347" width="65" height="65"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="65" id="8VG-a6-GdK"/>
                                                 <constraint firstAttribute="width" constant="65" id="vUk-Q2-JNf"/>
@@ -101,8 +101,8 @@
                                                 <action selector="tappedPlayPauseButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="LRo-wE-z1i"/>
                                             </connections>
                                         </button>
-                                        <button opaque="NO" alpha="0.5" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L7h-O3-puS">
-                                            <rect key="frame" x="58.5" y="367.5" width="44" height="44"/>
+                                        <button opaque="NO" alpha="0.5" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L7h-O3-puS" customClass="UIReactiveButton" customModule="Just_Radio" customModuleProvider="target">
+                                            <rect key="frame" x="80.5" y="357.5" width="44" height="44"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="44" id="KCs-8D-GVK"/>
                                                 <constraint firstAttribute="width" constant="44" id="zTn-T1-B7W"/>
@@ -112,8 +112,8 @@
                                                 <action selector="tappedFavButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="LEM-CI-vyo"/>
                                             </connections>
                                         </button>
-                                        <button opaque="NO" alpha="0.5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NCK-bh-Y5C">
-                                            <rect key="frame" x="311.5" y="367.5" width="44" height="44"/>
+                                        <button opaque="NO" alpha="0.5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NCK-bh-Y5C" customClass="UIReactiveButton" customModule="Just_Radio" customModuleProvider="target">
+                                            <rect key="frame" x="289.5" y="357.5" width="44" height="44"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="44" id="S5k-xl-FHR"/>
                                                 <constraint firstAttribute="width" constant="44" id="eK4-aa-GEj"/>
@@ -126,17 +126,17 @@
                                     </subviews>
                                     <constraints>
                                         <constraint firstAttribute="trailing" secondItem="AH1-tr-w0T" secondAttribute="trailing" constant="15" id="3dg-cy-giT"/>
-                                        <constraint firstItem="NCK-bh-Y5C" firstAttribute="leading" secondItem="vrc-Eg-Nbw" secondAttribute="trailing" constant="72" id="4Ls-B4-jvN"/>
+                                        <constraint firstItem="NCK-bh-Y5C" firstAttribute="leading" secondItem="vrc-Eg-Nbw" secondAttribute="trailing" constant="50" id="4Ls-B4-jvN"/>
                                         <constraint firstItem="vrc-Eg-Nbw" firstAttribute="centerX" secondItem="BAe-Wp-9hf" secondAttribute="centerX" id="Dhs-Uk-pyt"/>
                                         <constraint firstItem="AH1-tr-w0T" firstAttribute="top" secondItem="Kgy-gx-EOU" secondAttribute="bottom" constant="-28" id="HpS-g3-5an"/>
                                         <constraint firstItem="AH1-tr-w0T" firstAttribute="leading" secondItem="BAe-Wp-9hf" secondAttribute="leading" constant="15" id="J14-LU-Lpi"/>
                                         <constraint firstItem="L7h-O3-puS" firstAttribute="centerY" secondItem="vrc-Eg-Nbw" secondAttribute="centerY" id="TWN-rF-hcM"/>
-                                        <constraint firstItem="vrc-Eg-Nbw" firstAttribute="leading" secondItem="L7h-O3-puS" secondAttribute="trailing" constant="72" id="cn1-bj-VVO"/>
+                                        <constraint firstItem="vrc-Eg-Nbw" firstAttribute="leading" secondItem="L7h-O3-puS" secondAttribute="trailing" constant="50" id="cn1-bj-VVO"/>
                                         <constraint firstItem="Kgy-gx-EOU" firstAttribute="centerX" secondItem="BAe-Wp-9hf" secondAttribute="centerX" id="f8K-lx-v5Y"/>
                                         <constraint firstAttribute="trailing" secondItem="QfW-Fz-6xu" secondAttribute="trailing" constant="15" id="jqU-rr-m8a"/>
-                                        <constraint firstItem="QfW-Fz-6xu" firstAttribute="top" secondItem="vrc-Eg-Nbw" secondAttribute="bottom" constant="30" id="jt0-P5-VKs"/>
+                                        <constraint firstItem="QfW-Fz-6xu" firstAttribute="top" secondItem="vrc-Eg-Nbw" secondAttribute="bottom" constant="15" id="jt0-P5-VKs"/>
                                         <constraint firstItem="NCK-bh-Y5C" firstAttribute="centerY" secondItem="vrc-Eg-Nbw" secondAttribute="centerY" id="mHB-0D-H2C"/>
-                                        <constraint firstItem="vrc-Eg-Nbw" firstAttribute="top" secondItem="AH1-tr-w0T" secondAttribute="bottom" constant="40" id="skg-ET-szm"/>
+                                        <constraint firstItem="vrc-Eg-Nbw" firstAttribute="top" secondItem="AH1-tr-w0T" secondAttribute="bottom" constant="30" id="skg-ET-szm"/>
                                         <constraint firstItem="QfW-Fz-6xu" firstAttribute="leading" secondItem="BAe-Wp-9hf" secondAttribute="leading" constant="15" id="tOk-bY-URE"/>
                                     </constraints>
                                 </view>
@@ -221,7 +221,7 @@
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <subviews>
                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="47J-mk-8uN">
-                                                                <rect key="frame" x="15" y="10" width="384" height="60"/>
+                                                                <rect key="frame" x="15" y="10" width="389" height="60"/>
                                                                 <subviews>
                                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1uh-vQ-gA3">
                                                                         <rect key="frame" x="0.0" y="0.0" width="60" height="60"/>
@@ -231,7 +231,7 @@
                                                                         </constraints>
                                                                     </imageView>
                                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="iB8-S2-Ah0">
-                                                                        <rect key="frame" x="70" y="10.5" width="260" height="38.5"/>
+                                                                        <rect key="frame" x="70" y="10.5" width="265" height="38.5"/>
                                                                         <subviews>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="dZa-GZ-NH3">
                                                                                 <rect key="frame" x="0.0" y="0.0" width="157.5" height="20.5"/>
@@ -266,13 +266,14 @@
                                                                             </label>
                                                                         </subviews>
                                                                     </stackView>
-                                                                    <button opaque="NO" alpha="0.5" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vbO-H4-FBy">
-                                                                        <rect key="frame" x="340" y="8" width="44" height="44"/>
+                                                                    <button opaque="NO" alpha="0.29999999999999999" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vbO-H4-FBy" customClass="UIReactiveButton" customModule="Just_Radio" customModuleProvider="target">
+                                                                        <rect key="frame" x="345" y="8" width="44" height="44"/>
                                                                         <constraints>
                                                                             <constraint firstAttribute="height" constant="44" id="LAI-GA-HdJ"/>
                                                                             <constraint firstAttribute="width" constant="44" id="tjG-J6-77o"/>
                                                                         </constraints>
-                                                                        <inset key="imageEdgeInsets" minX="20" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                                        <inset key="contentEdgeInsets" minX="3" minY="0.0" maxX="3" maxY="0.0"/>
+                                                                        <inset key="imageEdgeInsets" minX="3" minY="0.0" maxX="3" maxY="0.0"/>
                                                                         <state key="normal" image="Fav Off"/>
                                                                         <connections>
                                                                             <action selector="favButtonTapped:" destination="wEw-Zz-Oyn" eventType="touchUpInside" id="RxW-xt-ipp"/>
@@ -284,7 +285,7 @@
                                                         <constraints>
                                                             <constraint firstItem="47J-mk-8uN" firstAttribute="leading" secondItem="RnZ-He-O3U" secondAttribute="leading" constant="15" id="X62-D8-r13"/>
                                                             <constraint firstItem="47J-mk-8uN" firstAttribute="centerY" secondItem="RnZ-He-O3U" secondAttribute="centerY" id="fTT-BP-b7L"/>
-                                                            <constraint firstAttribute="trailing" secondItem="47J-mk-8uN" secondAttribute="trailing" constant="15" id="wfa-WO-dId"/>
+                                                            <constraint firstAttribute="trailing" secondItem="47J-mk-8uN" secondAttribute="trailing" constant="10" id="wfa-WO-dId"/>
                                                         </constraints>
                                                     </tableViewCellContentView>
                                                     <connections>

@@ -19,8 +19,8 @@ class NowPlayingViewController: UIViewController {
     @IBOutlet weak var albumArtImageView: UIImageView!
     @IBOutlet weak var trackNameLabel: UILabel!
     @IBOutlet weak var playPauseButton: UIReactiveButton!
-    @IBOutlet weak var favButton: UIButton!
-    @IBOutlet weak var moreButton: UIButton!
+    @IBOutlet weak var favButton: UIReactiveButton!
+    @IBOutlet weak var moreButton: UIReactiveButton!
     @IBOutlet weak var airplayStackView: UIStackView!
     @IBOutlet weak var airplayButton: UIButton!
     @IBOutlet weak var airplayLabel: UILabel!
@@ -272,15 +272,15 @@ class NowPlayingViewController: UIViewController {
     @IBAction func tappedPlayPauseButton(_ sender: Any) {
         UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
         
-//        if radioPlayer.fplayer.isPlaying {
-//            radioPlayer.fplayer.stop()
-//        } else {
-//            radioPlayer.fplayer.play()
-//        }
+        if radioPlayer.fplayer.isPlaying {
+            radioPlayer.fplayer.stop()
+        } else {
+            radioPlayer.fplayer.play()
+        }
     }
     
     @IBAction func tappedFavButton(_ sender: Any) {
-        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         
         if let favStations = favoriteStationsCaretaker.stations, let station = self.currentStation {
             if favStations.contains(station) {
@@ -298,7 +298,7 @@ class NowPlayingViewController: UIViewController {
     }
     
     @IBAction func tappedMoreButton(_ sender: Any) {
-        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         
     }
 }
@@ -340,7 +340,9 @@ extension NowPlayingViewController: RadioPlayerDelegate {
             
         case .readyToPlay:
             print( "playerStateDidChange: READY TO PLAY" )
-            //playPauseButton.setImage(UIImage(named: "Pause"), for: .normal)
+            playPauseButton.setImage(UIImage(named: "Pause"), for: .normal)
+            playPauseButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            
             break
             
         case .urlNotSet:
@@ -358,21 +360,12 @@ extension NowPlayingViewController: RadioPlayerDelegate {
     
     func playbackStateDidChange(_ playbackState: FRadioPlaybackState) {
         switch playbackState {
-        case .paused:
-            print( "playbackStateDidChange: PAUSED" )
-            //playPauseButton.setImage(UIImage(named: "Play"), for: .normal)
-            break
+        case .paused, .stopped:
+            playPauseButton.setImage(UIImage(named: "Play"), for: .normal)
+            playPauseButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: 0)
             
-        case .playing:
-            print( "playbackStateDidChange: PLAYING" )
+            break
 
-            break
-            
-        case .stopped:
-            print( "playbackStateDidChange: STOPPED" )
-            //playPauseButton.setImage(UIImage(named: "Play"), for: .normal)
-            break
-            
         default:
             break
         }

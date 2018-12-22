@@ -22,7 +22,7 @@ class StationTableViewCell: UITableViewCell {
     @IBOutlet weak var stationDescLabel: UILabel!
     @IBOutlet weak var stationImageView: UIImageView!
     @IBOutlet weak var stationPlayingStatusView: NVActivityIndicatorView!
-    @IBOutlet weak var favButton: UIButton!
+    @IBOutlet weak var favButton: UIReactiveButton!
 
     @IBOutlet weak var statusViewWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var statusViewHeightConstraint: NSLayoutConstraint!
@@ -117,7 +117,7 @@ class StationTableViewCell: UITableViewCell {
     
     func deselectFavButton() {
         favButton.setImage(UIImage(named: "Fav Off"), for: .normal)
-        favButton.layer.opacity = 0.5
+        favButton.layer.opacity = 0.3
     }
     
     func showStatusIndicator() {

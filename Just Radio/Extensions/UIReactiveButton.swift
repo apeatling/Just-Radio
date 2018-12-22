@@ -37,27 +37,36 @@ class UIReactiveButton: UIButton {
     override func layoutSubviews() {
         super.layoutSubviews()
         layer.cornerRadius = bounds.width / 2
+        imageView?.contentMode = .center
     }
     
     @objc private func touchDown() {
         animator.stopAnimation(true)
 
-        self.backgroundColor = self.highlightedColor
-
-        animator = UIViewPropertyAnimator(duration: 0.2, curve: .easeOut, animations: {
+        animator = UIViewPropertyAnimator(duration: 0.2, curve: .easeInOut, animations: {
+            self.backgroundColor = self.highlightedColor
             self.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
         })
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             self.animator.startAnimation()
         }
     }
     
     @objc private func touchUp() {
-        animator = UIViewPropertyAnimator(duration: 0.2, curve: .easeOut, animations: {
+        UIViewPropertyAnimator(duration: 0.2, curve: .easeInOut, animations: {
+            self.backgroundColor = self.highlightedColor
+            self.imageView?.transform = CGAffineTransform(scaleX: 0.85, y: 0.85)
+        }).startAnimation()
+        
+        animator = UIViewPropertyAnimator(duration: 0.2, curve: .easeInOut, animations: {
             self.backgroundColor = self.normalColor
             self.transform = .identity
+            self.imageView?.transform = .identity
         })
-        animator.startAnimation()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.animator.startAnimation()
+        }
     }
 }
