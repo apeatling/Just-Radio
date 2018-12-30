@@ -294,10 +294,17 @@ extension StationsViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let remove = UITableViewRowAction(style: .destructive, title: "Remove") { (action, indexPath) in
-            // delete item at indexPath
+        let remove = UITableViewRowAction(style: .normal, title: "Remove") { (action, indexPath) in
+            let isCurrentStation = self.favoriteStations[indexPath.row] == self.currentStation
             self.favoriteStations.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
+            
+            if isCurrentStation {
+                self.unFavStation() // switches current playing fav, to current play not fav (deleted from favs)
+                self.delegate?.stationsViewController(self, didUnFavStation: self.currentStation)
+            } else {
+                self.tableView.deleteRows(at: [indexPath], with: .automatic)
+            }
+
         }
         remove.backgroundColor = UIColor(red:0.82, green:0.12, blue:0.36, alpha:1)
         

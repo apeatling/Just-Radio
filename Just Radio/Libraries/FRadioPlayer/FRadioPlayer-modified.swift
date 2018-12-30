@@ -125,6 +125,9 @@ import AVFoundation
      - parameter artworkURL: URL for the artwork from iTunes
      */
     @objc optional func radioPlayer(_ player: FRadioPlayer, artworkDidChange artworkURL: URL?)
+
+    // Called when port changes (bluetooth output, airplay connected, car etc)
+    @objc optional func radioPlayer(_ player: FRadioPlayer, portDidChange portType: AVAudioSession.Port?, portName: String?)
 }
 
 // MARK: - FRadioPlayer
@@ -221,30 +224,27 @@ open class FRadioPlayer: NSObject {
     
     private override init() {
         super.init()
-
-        #if !os(macOS)
-        let options: AVAudioSession.CategoryOptions
-
-        // Enable bluetooth playback
-        #if os(iOS)
-        options = [.defaultToSpeaker, .allowBluetooth]
-        #else
-        options = []
-        #endif
-
-        // Start audio session
+        
         let audioSession = AVAudioSession.sharedInstance()
-        try? audioSession.setCategory(AVAudioSession.Category.playback, mode: AVAudioSession.Mode.default, options: options)
-        #endif
-
+//        try? audioSession.setCategory(
+//            AVAudioSession.Category.playback,
+//            mode: AVAudioSession.Mode.default,
+//            options: [.allowBluetooth, .allowAirPlay, .allowBluetoothA2DP])
+        
+        try? audioSession.setCategory(
+              AVAudioSession.Category.playback,
+              mode: AVAudioSession.Mode.default,
+              policy: AVAudioSession.RouteSharingPolicy.longForm,
+              options: [.defaultToSpeaker, .allowBluetooth, .allowAirPlay, .allowBluetoothA2DP])
+        
+        try? audioSession.setActive(true)
+        
         // Notifications
         setupNotifications()
         
         // Check for headphones
-        #if os(iOS)
         checkHeadphonesConnection(outputs: AVAudioSession.sharedInstance().currentRoute.outputs)
-        #endif
-
+        
         // Reachability config
         try? reachability.startNotifier()
         NotificationCenter.default.addObserver(self, selector: #selector(reachabilityChanged(note:)), name: .reachabilityChanged, object: reachability)
@@ -258,8 +258,6 @@ open class FRadioPlayer: NSObject {
      
      */
     open func play() {
-        state = .loading
-        
         guard let player = player else { return }
         if player.currentItem == nil, playerItem != nil {
             player.replaceCurrentItem(with: playerItem)
@@ -305,8 +303,12 @@ open class FRadioPlayer: NSObject {
         guard let url = url else { state = .urlNotSet; return }
         
         state = .loading
-        
-        preparePlayer(with: AVAsset(url: url)) { (success, asset) in
+
+        guard let urlToPlay = RadioTimeHelper.getStreamURL(fromURL: url) else {
+            state = .urlNotSet; return
+        }
+
+        preparePlayer(with: AVURLAsset(url: urlToPlay)) { (success, asset) in
             guard success, let asset = asset else {
                 self.resetPlayer()
                 self.state = .error
@@ -361,7 +363,7 @@ open class FRadioPlayer: NSObject {
     /** Prepare the player from the passed AVAsset
      
      */
-    private func preparePlayer(with asset: AVAsset?, completionHandler: @escaping (_ isPlayable: Bool, _ asset: AVAsset?)->()) {
+    private func preparePlayer(with asset: AVURLAsset?, completionHandler: @escaping (_ isPlayable: Bool, _ asset: AVAsset?)->()) {
         guard let asset = asset else {
             completionHandler(false, nil)
             return
@@ -387,6 +389,14 @@ open class FRadioPlayer: NSObject {
     
     private func timedMetadataDidChange(rawValue: String?) {
         let parts = rawValue?.components(separatedBy: " - ")
+        
+        // Check for single char meta, or timestamps
+        if let first = parts?.first, let last = parts?.last {
+            if first.count < 2 || last.count < 2 || first.components(separatedBy: ":").count > 2 || last.components(separatedBy: ":").count > 2 {
+                return
+            }
+        }
+
         delegate?.radioPlayer?(self, metadataDidChange: parts?.first, trackName: parts?.last)
         delegate?.radioPlayer?(self, metadataDidChange: rawValue)
         shouldGetArtwork(for: rawValue, enableArtwork)
@@ -398,7 +408,7 @@ open class FRadioPlayer: NSObject {
             self.delegate?.radioPlayer?(self, artworkDidChange: nil)
             return
         }
-        
+
         FRadioAPI.getArtwork(for: rawValue, size: artworkSize, completionHandler: { [unowned self] artworlURL in
             DispatchQueue.main.async {
                 self.delegate?.radioPlayer?(self, artworkDidChange: artworlURL)
@@ -426,22 +436,20 @@ open class FRadioPlayer: NSObject {
     // MARK: - Notifications
     
     private func setupNotifications() {
-        #if os(iOS)
         let notificationCenter = NotificationCenter.default
         notificationCenter.addObserver(self, selector: #selector(handleInterruption), name: AVAudioSession.interruptionNotification, object: nil)
         notificationCenter.addObserver(self, selector: #selector(handleRouteChange), name: AVAudioSession.routeChangeNotification, object: nil)
-        #endif
     }
     
     // MARK: - Responding to Interruptions
     
     @objc private func handleInterruption(notification: Notification) {
-        #if os(iOS)
         guard let userInfo = notification.userInfo,
             let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
             let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
                 return
         }
+        
         switch type {
         case .began:
             DispatchQueue.main.async { self.pause() }
@@ -450,7 +458,6 @@ open class FRadioPlayer: NSObject {
             let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
             DispatchQueue.main.async { options.contains(.shouldResume) ? self.play() : self.pause() }
         }
-        #endif
     }
     
     @objc func reachabilityChanged(note: Notification) {
@@ -482,7 +489,7 @@ open class FRadioPlayer: NSObject {
     }
     
     // MARK: - Responding to Route Changes
-    #if os(iOS)
+    
     private func checkHeadphonesConnection(outputs: [AVAudioSessionPortDescription]) {
         for output in outputs where output.portType == .headphones {
             headphonesConnected = true
@@ -492,22 +499,36 @@ open class FRadioPlayer: NSObject {
     }
     
     @objc private func handleRouteChange(notification: Notification) {
-
         guard let userInfo = notification.userInfo,
             let reasonValue = userInfo[AVAudioSessionRouteChangeReasonKey] as? UInt,
             let reason = AVAudioSession.RouteChangeReason(rawValue:reasonValue) else { return }
         
+        let currentRoute = AVAudioSession.sharedInstance().currentRoute
+        
         switch reason {
         case .newDeviceAvailable:
-            checkHeadphonesConnection(outputs: AVAudioSession.sharedInstance().currentRoute.outputs)
+            checkHeadphonesConnection(outputs: currentRoute.outputs)
         case .oldDeviceUnavailable:
             guard let previousRoute = userInfo[AVAudioSessionRouteChangePreviousRouteKey] as? AVAudioSessionRouteDescription else { return }
             checkHeadphonesConnection(outputs: previousRoute.outputs);
             DispatchQueue.main.async { self.headphonesConnected ? () : self.pause() }
         default: break
         }
+        
+        for output in currentRoute.outputs {
+            delegate?.radioPlayer?(self, portDidChange: output.portType, portName: output.portName)
+        }
     }
-    #endif
+    
+    func getCurrentRoute() -> (portType: AVAudioSession.Port, portName: String)? {
+        let currentRoute = AVAudioSession.sharedInstance().currentRoute
+        for output in currentRoute.outputs {
+            return (output.portType, output.portName)
+        }
+        
+        return nil
+    }
+    
     // MARK: - KVO
     
     /// :nodoc:
@@ -535,7 +556,7 @@ open class FRadioPlayer: NSObject {
             case "playbackLikelyToKeepUp":
                 
                 self.state = item.isPlaybackLikelyToKeepUp ? .loadingFinished : .loading
-
+            
             case "timedMetadata":
                 let rawValue = item.timedMetadata?.first?.value as? String
                 timedMetadataDidChange(rawValue: rawValue)

@@ -18,7 +18,7 @@ class NowPlayingViewController: UIViewController {
     // MARK: - Outlets
     @IBOutlet weak var albumArtImageView: UIImageView!
     @IBOutlet weak var trackNameLabel: UILabel!
-    @IBOutlet weak var playPauseButton: UIReactiveButton!
+    @IBOutlet weak var playPauseButton: UIPlayPauseButton!
     @IBOutlet weak var favButton: UIReactiveButton!
     @IBOutlet weak var moreButton: UIReactiveButton!
     @IBOutlet weak var airplayStackView: UIStackView!
@@ -158,7 +158,18 @@ class NowPlayingViewController: UIViewController {
     func setupRemoteCommandCenter() {
         // Get the shared MPRemoteCommandCenter
         let commandCenter = MPRemoteCommandCenter.shared()
-
+        
+        // Add handler for Play/Pause toggle Command
+        commandCenter.togglePlayPauseCommand.addTarget { (event) -> MPRemoteCommandHandlerStatus in
+            if self.radioPlayer.fplayer.isPlaying {
+                self.radioPlayer.fplayer.stop()
+            } else {
+                self.radioPlayer.fplayer.play()
+            }
+            
+            return .success
+        }
+        
         // Add handler for Play Command
         commandCenter.playCommand.addTarget { event in
             self.radioPlayer.fplayer.play()
@@ -167,6 +178,12 @@ class NowPlayingViewController: UIViewController {
 
         // Add handler for Pause Command
         commandCenter.pauseCommand.addTarget { event in
+            self.radioPlayer.fplayer.stop()
+            return .success
+        }
+        
+        // Add handler for Stop Command
+        commandCenter.stopCommand.addTarget { event in
             self.radioPlayer.fplayer.stop()
             return .success
         }
@@ -193,6 +210,7 @@ class NowPlayingViewController: UIViewController {
 
         nowPlayingInfo[MPMediaItemPropertyArtist] = artist
         nowPlayingInfo[MPMediaItemPropertyTitle] = title
+        nowPlayingInfo[MPMediaItemPropertyAlbumTitle] = ""
         
         // Set the metadata
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
@@ -332,6 +350,7 @@ extension NowPlayingViewController: RadioPlayerDelegate {
         switch playerState {
         case .loading:
             print( "playerStateDidChange: LOADING" )
+            playPauseButton.setLoading()
             break
             
         case .loadingFinished:
@@ -340,17 +359,18 @@ extension NowPlayingViewController: RadioPlayerDelegate {
             
         case .readyToPlay:
             print( "playerStateDidChange: READY TO PLAY" )
-            playPauseButton.setImage(UIImage(named: "Pause"), for: .normal)
-            playPauseButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            playPauseButton.setPause()
             
             break
             
         case .urlNotSet:
             print( "playerStateDidChange: URL NOT SET" )
+            playPauseButton.setPlay()
             break
             
         case .error:
             print( "playerStateDidChange: RADIO PLAYER ERROR" )
+            playPauseButton.setPlay()
             break
             
         default:
@@ -361,11 +381,9 @@ extension NowPlayingViewController: RadioPlayerDelegate {
     func playbackStateDidChange(_ playbackState: FRadioPlaybackState) {
         switch playbackState {
         case .paused, .stopped:
-            playPauseButton.setImage(UIImage(named: "Play"), for: .normal)
-            playPauseButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: 0)
-            
+            playPauseButton.setPlay()
             break
-
+        
         default:
             break
         }

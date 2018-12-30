@@ -89,7 +89,7 @@
                                                 </stackView>
                                             </subviews>
                                         </stackView>
-                                        <button opaque="NO" alpha="0.75" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vrc-Eg-Nbw" customClass="UIReactiveButton" customModule="Just_Radio" customModuleProvider="target">
+                                        <button opaque="NO" alpha="0.75" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vrc-Eg-Nbw" customClass="UIPlayPauseButton" customModule="Just_Radio" customModuleProvider="target">
                                             <rect key="frame" x="174.5" y="347" width="65" height="65"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="65" id="8VG-a6-GdK"/>
