@@ -54,7 +54,7 @@ class NowPlayingViewController: UIViewController {
         stationsVC.radioPlayer = self.radioPlayer
         stationsVC.favoriteStationsCaretaker = self.favoriteStationsCaretaker
         
-        setCurrentStation(station: nil)
+        setCurrentStation(station: nil, autoPlay: false)
  
         // Set up floating panel for stations
         fpc = FloatingPanelController()
@@ -94,7 +94,7 @@ class NowPlayingViewController: UIViewController {
         fpc.removePanelFromParent(animated: true)
     }
     
-    private func setCurrentStation(station: Station?) {
+    private func setCurrentStation(station: Station?, autoPlay: Bool = true) {
         let lastPlayedStationCaretaker = LastPlayedStationCaretaker()
         
         if station == nil {
@@ -110,6 +110,11 @@ class NowPlayingViewController: UIViewController {
         stationsVC.currentStation = currentStation
         radioPlayer.station = currentStation
         radioPlayer.fplayer.radioURL = URL(string: currentStation.url)
+        radioPlayer.fplayer.isAutoPlay = true
+        
+        if !autoPlay {
+            radioPlayer.fplayer.isAutoPlay = false
+        }
         
         if StationHelper.isFav(currentStation, favoriteStationsCaretaker: favoriteStationsCaretaker) {
             selectFavButton()
@@ -310,7 +315,7 @@ class NowPlayingViewController: UIViewController {
     // MARK: - Actions
     @IBAction func tappedPlayPauseButton(_ sender: Any) {
         UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
-        
+
         if radioPlayer.fplayer.isPlaying {
             radioPlayer.fplayer.stop()
             playPauseButton.setPlay()

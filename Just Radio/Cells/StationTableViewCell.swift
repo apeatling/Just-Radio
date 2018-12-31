@@ -21,7 +21,7 @@ class StationTableViewCell: UITableViewCell {
     @IBOutlet weak var stationNameLabel: UILabel!
     @IBOutlet weak var stationDescLabel: UILabel!
     @IBOutlet weak var stationImageView: UIImageView!
-    @IBOutlet weak var stationPlayingStatusView: NVActivityIndicatorView!
+    @IBOutlet weak var stationPlayingStatusView: UIView!
     @IBOutlet weak var favButton: UIReactiveButton!
 
     @IBOutlet weak var statusViewWidthConstraint: NSLayoutConstraint!
@@ -36,7 +36,7 @@ class StationTableViewCell: UITableViewCell {
     var isCurrentStation = false {
         didSet {
             if isCurrentStation {
-                isRadioPlaying ? setPlayingIndicator() : setLoadingIndicator()
+                if isRadioPlaying { setPlayingIndicator() }
                 
                 NotificationCenter.default.addObserver(self,
                    selector: #selector(playerStateDidChange),
@@ -49,7 +49,7 @@ class StationTableViewCell: UITableViewCell {
                    name: NSNotification.Name(rawValue: "RadioPlayer.playbackStateDidChange"),
                    object: nil
                 )
-                
+
             } else {
                 hideStatusIndicator()
                 NotificationCenter.default.removeObserver(self)
@@ -60,6 +60,7 @@ class StationTableViewCell: UITableViewCell {
     var isRadioPlaying = false
     
     func configure(stationForCell: Station, radioPlayer: RadioPlayer, currentStation: Station?, favoriteStationsCaretaker: FavoriteStationsCaretaker, showBorder: Bool) {
+        
         self.favoriteStationsCaretaker = favoriteStationsCaretaker
         self.station = stationForCell
         self.isRadioPlaying = radioPlayer.fplayer.isPlaying
@@ -135,29 +136,25 @@ class StationTableViewCell: UITableViewCell {
     func setLoadingIndicator() {
         showStatusIndicator()
         
-        self.stationPlayingStatusView.stopAnimating()
+        let frame = CGRect(x: 2, y: 0, width: self.stationPlayingStatusView.bounds.width, height: self.stationPlayingStatusView.bounds.height)
+        let loadingIndicator = NVActivityIndicatorView(frame: frame, type: .ballScale, color: UIColor.darkGray, padding: 0)
         
-        self.statusViewHeightConstraint.constant = 15
-        self.statusViewWidthConstraint.constant = 15
-        
-        self.stationPlayingStatusView.type = .ballScale
-        self.stationPlayingStatusView.color = UIColor.darkGray
-        
-        self.stationPlayingStatusView.startAnimating()
+        self.stationPlayingStatusView.subviews.forEach { $0.removeFromSuperview() }
+        self.stationPlayingStatusView.addSubview(loadingIndicator)
+
+        loadingIndicator.startAnimating()
     }
     
     func setPlayingIndicator() {
         showStatusIndicator()
         
-        self.stationPlayingStatusView.stopAnimating()
+        let frame = CGRect(x: 5, y: 0, width: self.stationPlayingStatusView.bounds.width, height: self.stationPlayingStatusView.bounds.height)
+        let playingIndicator = NVActivityIndicatorView(frame: frame, type: .audioEqualizer, color: UIColor.gray, padding: 1)
         
-        self.statusViewHeightConstraint.constant = 12
-        self.statusViewWidthConstraint.constant = 20
-        
-        self.stationPlayingStatusView.type = .audioEqualizer
-        self.stationPlayingStatusView.color = UIColor.gray
-        
-        self.stationPlayingStatusView.startAnimating()
+        self.stationPlayingStatusView.subviews.forEach { $0.removeFromSuperview() }
+        self.stationPlayingStatusView.addSubview(playingIndicator)
+
+        playingIndicator.startAnimating()
     }
     
     func addBorder() {
@@ -180,10 +177,6 @@ class StationTableViewCell: UITableViewCell {
         if state == .loading {
             setLoadingIndicator()
         }
-        
-        if state == .readyToPlay {
-            setPlayingIndicator()
-        }
 
         if state == .error || state == .urlNotSet {
             hideStatusIndicator()
@@ -203,6 +196,9 @@ class StationTableViewCell: UITableViewCell {
             hideStatusIndicator()
         }
         
+        if state == .playing {
+            setPlayingIndicator()
+        }
     }
     
     override func prepareForReuse() {

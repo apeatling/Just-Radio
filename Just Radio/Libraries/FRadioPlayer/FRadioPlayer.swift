@@ -266,7 +266,6 @@ open class FRadioPlayer: NSObject {
         }
         
         player.play()
-        playbackState = .playing
     }
     
     /**
@@ -276,7 +275,6 @@ open class FRadioPlayer: NSObject {
     open func pause() {
         guard let player = player else { return }
         player.pause()
-        playbackState = .paused
     }
     
     /**
@@ -319,6 +317,7 @@ open class FRadioPlayer: NSObject {
     private func setupPlayer(with asset: AVAsset) {
         if player == nil {
             player = AVPlayer()
+            player?.addObserver(self, forKeyPath: "timeControlStatus", options: NSKeyValueObservingOptions.new, context: nil)
         }
         
         playerItem = AVPlayerItem(asset: asset)
@@ -421,6 +420,7 @@ open class FRadioPlayer: NSObject {
     deinit {
         resetPlayer()
         NotificationCenter.default.removeObserver(self)
+        player?.removeObserver(self, forKeyPath: "timeControlStatus")
     }
     
     // MARK: - Notifications
@@ -539,9 +539,24 @@ open class FRadioPlayer: NSObject {
             case "timedMetadata":
                 let rawValue = item.timedMetadata?.first?.value as? String
                 timedMetadataDidChange(rawValue: rawValue)
-                
+
             default:
                 break
+            }
+        }
+        
+        // APEATLING MODIFICATION
+        if let keyPath = keyPath {
+            switch keyPath {
+                case "timeControlStatus":
+                    if player?.timeControlStatus == AVPlayer.TimeControlStatus.playing {
+                        playbackState = .playing
+                    } else if player?.timeControlStatus == AVPlayer.TimeControlStatus.paused {
+                        playbackState = .paused
+                    }
+                
+                default:
+                    break
             }
         }
     }
