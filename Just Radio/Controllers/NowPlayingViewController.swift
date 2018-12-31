@@ -232,16 +232,15 @@ class NowPlayingViewController: UIViewController {
             self,
             selector: #selector(airplayChanged),
             name: AVAudioSession.routeChangeNotification,
-            object: AVAudioSession.sharedInstance())
+            object: self.radioPlayer.fplayer.audioSession)
     }
     
     @objc func airplayChanged() {
-        print( "*************\n", "Airplay Changed", "\n****************" )
         self.setActiveAirplayDevice()
     }
     
     func setActiveAirplayDevice() {
-        let currentRoute = AVAudioSession.sharedInstance().currentRoute
+        let currentRoute = self.radioPlayer.fplayer.audioSession.currentRoute
         for output in currentRoute.outputs {
             self.portDidChange(portType: output.portType, portName: output.portName)
         }
@@ -258,6 +257,7 @@ class NowPlayingViewController: UIViewController {
             routePickerView.tintColor = .clear
             routePickerView.activeTintColor = .clear
             routePickerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            routePickerView.delegate = self
         
         self.airplayStackView.addSubview(routePickerView)
     }
@@ -489,6 +489,12 @@ extension NowPlayingViewController: UISearchBarDelegate {
                 }
             }
         }
+    }
+}
+
+extension NowPlayingViewController: AVRoutePickerViewDelegate {
+    func routePickerViewDidEndPresentingRoutes(_ routePickerView: AVRoutePickerView) {
+        self.airplayChanged()
     }
 }
 

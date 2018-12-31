@@ -177,6 +177,8 @@ open class FRadioPlayer: NSObject {
         }
     }
     
+    open var audioSession: AVAudioSession!
+    
     /// Player current state of type `FRadioPlayerState`
     open private(set) var state = FRadioPlayerState.urlNotSet {
         didSet {
@@ -233,8 +235,9 @@ open class FRadioPlayer: NSObject {
         #endif
 
         // Start audio session
-        let audioSession = AVAudioSession.sharedInstance()
-        try? audioSession.setCategory(AVAudioSession.Category.playback, mode: AVAudioSession.Mode.default, options: options)
+        audioSession = AVAudioSession.sharedInstance()
+        try? audioSession.setCategory(AVAudioSession.Category.playback, mode: AVAudioSession.Mode.default, policy: .longForm, options: options)
+        try? audioSession.setActive(true, options: .notifyOthersOnDeactivation)
         #endif
 
         // Notifications
