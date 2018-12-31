@@ -48,6 +48,7 @@ class NowPlayingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Set up Stations View Controller
         stationsVC = storyboard?.instantiateViewController(withIdentifier: "StationsViewController") as? StationsViewController
         stationsVC.nowPlayingVC = self
         stationsVC.radioPlayer = self.radioPlayer
@@ -55,6 +56,7 @@ class NowPlayingViewController: UIViewController {
         
         setCurrentStation(station: nil)
  
+        // Set up floating panel for stations
         fpc = FloatingPanelController()
         fpc.delegate = self
         fpc.surfaceView.backgroundColor = .clear
@@ -63,10 +65,17 @@ class NowPlayingViewController: UIViewController {
         fpc.set(contentViewController: stationsVC)
         fpc.track(scrollView: stationsVC.tableView)
         
+        // Setup album art
         albumArtImageView.layer.cornerRadius = 10
         albumArtImageView.clipsToBounds = true
 
+        // Speak to the remote commmand center
         setupRemoteCommandCenter()
+        
+        // Set up Airplay status
+        setActiveAirplayDevice()
+        listenForAirplayChange()
+        setupAirplayPicker()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -77,9 +86,6 @@ class NowPlayingViewController: UIViewController {
         
         stationsVC.searchBar.delegate = self
         stationsVC.delegate = self
-        
-        getActiveAirplayDevice()
-        setupAirplayPicker()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -216,11 +222,26 @@ class NowPlayingViewController: UIViewController {
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
     }
     
-    func getActiveAirplayDevice() {
-        guard let activeRoute = radioPlayer.fplayer.getCurrentRoute() else { return }
-        self.portDidChange(portType: activeRoute.portType, portName: activeRoute.portName)
+    func listenForAirplayChange() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(airplayChanged),
+            name: AVAudioSession.routeChangeNotification,
+            object: AVAudioSession.sharedInstance())
     }
     
+    @objc func airplayChanged() {
+        print( "*************\n", "Airplay Changed", "\n****************" )
+        self.setActiveAirplayDevice()
+    }
+    
+    func setActiveAirplayDevice() {
+        let currentRoute = AVAudioSession.sharedInstance().currentRoute
+        for output in currentRoute.outputs {
+            self.portDidChange(portType: output.portType, portName: output.portName)
+        }
+    }
+
     func setupAirplayPicker() {
         self.airplayStackView.isHidden = false
 
@@ -292,8 +313,10 @@ class NowPlayingViewController: UIViewController {
         
         if radioPlayer.fplayer.isPlaying {
             radioPlayer.fplayer.stop()
+            playPauseButton.setPlay()
         } else {
             radioPlayer.fplayer.play()
+            playPauseButton.setPause()
         }
     }
     
@@ -318,6 +341,10 @@ class NowPlayingViewController: UIViewController {
     @IBAction func tappedMoreButton(_ sender: Any) {
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }
 
@@ -346,44 +373,16 @@ extension NowPlayingViewController: StationsViewControllerDelegate {
 }
 
 extension NowPlayingViewController: RadioPlayerDelegate {
-    func playerStateDidChange(_ playerState: FRadioPlayerState) {
-        switch playerState {
-        case .loading:
-            print( "playerStateDidChange: LOADING" )
-            playPauseButton.setLoading()
-            break
-            
-        case .loadingFinished:
-            print( "playerStateDidChange: LOADING FINISHED" )
-            break
-            
-        case .readyToPlay:
-            print( "playerStateDidChange: READY TO PLAY" )
-            playPauseButton.setPause()
-            
-            break
-            
-        case .urlNotSet:
-            print( "playerStateDidChange: URL NOT SET" )
-            playPauseButton.setPlay()
-            break
-            
-        case .error:
-            print( "playerStateDidChange: RADIO PLAYER ERROR" )
-            playPauseButton.setPlay()
-            break
-            
-        default:
-            break
-        }
-    }
+    func playerStateDidChange(_ playerState: FRadioPlayerState) {}
     
     func playbackStateDidChange(_ playbackState: FRadioPlaybackState) {
         switch playbackState {
         case .paused, .stopped:
             playPauseButton.setPlay()
             break
-        
+        case .playing:
+            playPauseButton.setPause()
+            break
         default:
             break
         }

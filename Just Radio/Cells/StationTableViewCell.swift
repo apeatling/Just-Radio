@@ -212,8 +212,6 @@ class StationTableViewCell: UITableViewCell {
         stationDescLabel.text  = nil
         stationImageView.image = nil
         isCurrentStation = false
-        stationPlayingStatusView.isHidden = true
-        stationPlayingStatusView.layer.opacity = 0
         
         if let border = self.border {
             border.removeFromSuperlayer()

@@ -258,7 +258,7 @@ open class FRadioPlayer: NSObject {
      
      */
     open func play() {
-        state = .loading
+        state = .loading // APEATLING MODIFICATION
         
         guard let player = player else { return }
         if player.currentItem == nil, playerItem != nil {

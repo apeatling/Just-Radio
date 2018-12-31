@@ -10,7 +10,7 @@ import Foundation
 import AVKit
 
 extension FRadioPlayer {
-    func getCurrentRoute() -> (portType: AVAudioSession.Port, portName: String)? {
+    public func getCurrentRoute() -> (portType: AVAudioSession.Port, portName: String)? {
         let currentRoute = AVAudioSession.sharedInstance().currentRoute
         for output in currentRoute.outputs {
             return (output.portType, output.portName)
