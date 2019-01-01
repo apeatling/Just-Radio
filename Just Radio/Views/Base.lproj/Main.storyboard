@@ -82,7 +82,7 @@
                                                                 <constraint firstAttribute="width" relation="greaterThanOrEqual" id="lDS-JY-f9s"/>
                                                             </constraints>
                                                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="13"/>
-                                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="0.75" colorSpace="custom" customColorSpace="displayP3"/>
+                                                            <color key="textColor" red="0.2925974428653717" green="0.51591980457305908" blue="0.82751435041427612" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                     </subviews>

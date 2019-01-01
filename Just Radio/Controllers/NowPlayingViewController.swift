@@ -75,7 +75,6 @@ class NowPlayingViewController: UIViewController {
         // Set up Airplay status
         setActiveAirplayDevice()
         listenForAirplayChange()
-        setupAirplayPicker()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -246,7 +245,7 @@ class NowPlayingViewController: UIViewController {
         }
     }
 
-    func setupAirplayPicker() {
+    func setupAirplayPicker(isOn: Bool = false) {
         self.airplayStackView.isHidden = false
 
         // Add airplay picker to button
@@ -260,6 +259,13 @@ class NowPlayingViewController: UIViewController {
             routePickerView.delegate = self
         
         self.airplayStackView.addSubview(routePickerView)
+        
+        // Set correct button state
+        airplayButton.setImage(UIImage(named: "Airplay"), for: .normal)
+        
+        if isOn {
+            airplayButton.setImage(UIImage(named: "Airplay On"), for: .normal)
+        }
     }
     
     func showTrackLabel() {
@@ -405,6 +411,7 @@ extension NowPlayingViewController: RadioPlayerDelegate {
     
     func portDidChange(portType: AVAudioSession.Port?, portName: String?) {
         guard let portType = portType, let portName = portName else { return }
+        var isOn = false
         
         DispatchQueue.main.async {
             switch portType.rawValue {
@@ -413,13 +420,15 @@ extension NowPlayingViewController: RadioPlayerDelegate {
                 break
             case "AirPlay":
                 self.airplayLabel.text = UIDevice.current.model + " → " + portName
+                isOn = true
                 break
             default:
                 self.airplayLabel.text = portName
+                isOn = true
                 break
             }
 
-            self.setupAirplayPicker()
+            self.setupAirplayPicker(isOn: isOn)
         }
     }
     
