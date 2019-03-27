@@ -19,8 +19,8 @@ class NowPlayingViewController: UIViewController {
     @IBOutlet weak var albumArtImageView: UIImageView!
     @IBOutlet weak var trackNameLabel: UILabel!
     @IBOutlet weak var playPauseButton: UIPlayPauseButton!
-    @IBOutlet weak var favButton: UIReactiveButton!
-    @IBOutlet weak var moreButton: UIReactiveButton!
+    @IBOutlet weak var favButton: UISpringyButton!
+    @IBOutlet weak var moreButton: UISpringyButton!
     @IBOutlet weak var airplayStackView: UIStackView!
     @IBOutlet weak var airplayButton: UIButton!
     @IBOutlet weak var airplayLabel: UILabel!

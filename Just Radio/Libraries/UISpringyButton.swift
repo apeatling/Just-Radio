@@ -1,9 +1,9 @@
 //
 //  UISpringyButton.swift
-//  Just Radio
+//  v1.0
 //
-//  Created by Andy Peatling on 2018-12-16.
-//  Copyright © 2018 Andy Peatling. All rights reserved.
+//  Created by Andy Peatling
+//  https://apeatling.com
 //
 
 import Foundation
@@ -71,8 +71,8 @@ class UISpringyButton: UIButton {
         self.releaseButton()
     }
     
-    @objc private func longPress(_ guesture: UILongPressGestureRecognizer) {
-        if guesture.state == UIGestureRecognizer.State.began {
+    @objc private func longPress(_ gesture: UILongPressGestureRecognizer) {
+        if gesture.state == UIGestureRecognizer.State.began {
             self.longPress = true
         }
     }

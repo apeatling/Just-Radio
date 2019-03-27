@@ -22,7 +22,7 @@ class StationTableViewCell: UITableViewCell {
     @IBOutlet weak var stationDescLabel: UILabel!
     @IBOutlet weak var stationImageView: UIImageView!
     @IBOutlet weak var stationPlayingStatusView: UIView!
-    @IBOutlet weak var favButton: UIReactiveButton!
+    @IBOutlet weak var favButton: UISpringyButton!
 
     @IBOutlet weak var statusViewWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var statusViewHeightConstraint: NSLayoutConstraint!

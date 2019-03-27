@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class UIPlayPauseButton: UIReactiveButton {
+class UIPlayPauseButton: UISpringyButton {
     func setPlay() {
         self.setImage(UIImage(named: "Play"), for: .normal)
         self.imageEdgeInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: 0)
