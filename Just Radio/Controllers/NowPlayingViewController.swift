@@ -227,11 +227,11 @@ class NowPlayingViewController: UIViewController {
     }
     
     func listenForAirplayChange() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(airplayChanged),
-            name: AVAudioSession.routeChangeNotification,
-            object: self.radioPlayer.fplayer.audioSession)
+//        NotificationCenter.default.addObserver(
+//            self,
+//            selector: #selector(airplayChanged),
+//            name: AVAudioSession.routeChangeNotification,
+//            object: self.radioPlayer.fplayer.audioSession)
     }
     
     @objc func airplayChanged() {
@@ -239,10 +239,10 @@ class NowPlayingViewController: UIViewController {
     }
     
     func setActiveAirplayDevice() {
-        let currentRoute = self.radioPlayer.fplayer.audioSession.currentRoute
-        for output in currentRoute.outputs {
-            self.portDidChange(portType: output.portType, portName: output.portName)
-        }
+//        let currentRoute = self.radioPlayer.fplayer.audioSession.currentRoute
+//        for output in currentRoute.outputs {
+//            self.portDidChange(portType: output.portType, portName: output.portName)
+//        }
     }
 
     func setupAirplayPicker(isOn: Bool = false) {

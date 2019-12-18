@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina6_1" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -28,7 +26,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <label hidden="YES" opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AH1-tr-w0T" customClass="MarqueeLabel" customModule="Just_Radio" customModuleProvider="target">
-                                            <rect key="frame" x="15" y="291" width="384" height="26"/>
+                                            <rect key="frame" x="15" y="291" width="384" height="26.5"/>
                                             <attributedString key="attributedText">
                                                 <fragment content="Not Playing">
                                                     <attributes>
@@ -63,7 +61,7 @@
                                             </constraints>
                                         </imageView>
                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="QfW-Fz-6xu">
-                                            <rect key="frame" x="15" y="427" width="384" height="44"/>
+                                            <rect key="frame" x="15" y="427.5" width="384" height="44"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" alignment="center" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2T6-Vd-EFJ">
                                                     <rect key="frame" x="170" y="0.0" width="44" height="44"/>
@@ -90,7 +88,7 @@
                                             </subviews>
                                         </stackView>
                                         <button opaque="NO" alpha="0.75" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vrc-Eg-Nbw" customClass="UIPlayPauseButton" customModule="Just_Radio" customModuleProvider="target">
-                                            <rect key="frame" x="174.5" y="347" width="65" height="65"/>
+                                            <rect key="frame" x="174.5" y="347.5" width="65" height="65"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="65" id="8VG-a6-GdK"/>
                                                 <constraint firstAttribute="width" constant="65" id="vUk-Q2-JNf"/>
@@ -101,8 +99,8 @@
                                                 <action selector="tappedPlayPauseButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="LRo-wE-z1i"/>
                                             </connections>
                                         </button>
-                                        <button opaque="NO" alpha="0.5" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L7h-O3-puS" customClass="UIReactiveButton" customModule="Just_Radio" customModuleProvider="target">
-                                            <rect key="frame" x="80.5" y="357.5" width="44" height="44"/>
+                                        <button opaque="NO" alpha="0.5" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L7h-O3-puS" customClass="UISpringyButton" customModule="Just_Radio" customModuleProvider="target">
+                                            <rect key="frame" x="80.5" y="358" width="44" height="44"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="44" id="KCs-8D-GVK"/>
                                                 <constraint firstAttribute="width" constant="44" id="zTn-T1-B7W"/>
@@ -112,8 +110,8 @@
                                                 <action selector="tappedFavButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="LEM-CI-vyo"/>
                                             </connections>
                                         </button>
-                                        <button opaque="NO" alpha="0.5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NCK-bh-Y5C" customClass="UIReactiveButton" customModule="Just_Radio" customModuleProvider="target">
-                                            <rect key="frame" x="289.5" y="357.5" width="44" height="44"/>
+                                        <button opaque="NO" alpha="0.5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NCK-bh-Y5C" customClass="UISpringyButton" customModule="Just_Radio" customModuleProvider="target">
+                                            <rect key="frame" x="289.5" y="358" width="44" height="44"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="44" id="S5k-xl-FHR"/>
                                                 <constraint firstAttribute="width" constant="44" id="eK4-aa-GEj"/>
@@ -217,7 +215,7 @@
                                                     <rect key="frame" x="0.0" y="55.5" width="414" height="80"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="wEw-Zz-Oyn" id="RnZ-He-O3U">
-                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="79.5"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="80"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <subviews>
                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="47J-mk-8uN">
@@ -231,7 +229,7 @@
                                                                         </constraints>
                                                                     </imageView>
                                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="iB8-S2-Ah0">
-                                                                        <rect key="frame" x="70" y="10.5" width="265" height="38.5"/>
+                                                                        <rect key="frame" x="70" y="11" width="265" height="38.5"/>
                                                                         <subviews>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="dZa-GZ-NH3">
                                                                                 <rect key="frame" x="0.0" y="0.0" width="157.5" height="20.5"/>
@@ -243,7 +241,7 @@
                                                                                         <nil key="highlightedColor"/>
                                                                                     </label>
                                                                                     <view hidden="YES" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t2T-0n-nFw">
-                                                                                        <rect key="frame" x="0.0" y="3" width="15" height="15"/>
+                                                                                        <rect key="frame" x="0.0" y="2.5" width="15" height="15"/>
                                                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="width" constant="15" id="1Ih-4e-X9J"/>
@@ -266,7 +264,7 @@
                                                                             </label>
                                                                         </subviews>
                                                                     </stackView>
-                                                                    <button opaque="NO" alpha="0.29999999999999999" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vbO-H4-FBy" customClass="UIReactiveButton" customModule="Just_Radio" customModuleProvider="target">
+                                                                    <button opaque="NO" alpha="0.29999999999999999" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vbO-H4-FBy" customClass="UISpringyButton" customModule="Just_Radio" customModuleProvider="target">
                                                                         <rect key="frame" x="345" y="8" width="44" height="44"/>
                                                                         <constraints>
                                                                             <constraint firstAttribute="height" constant="44" id="LAI-GA-HdJ"/>

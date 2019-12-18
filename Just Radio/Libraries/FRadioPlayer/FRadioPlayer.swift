@@ -177,7 +177,18 @@ open class FRadioPlayer: NSObject {
         }
     }
     
-    open var audioSession: AVAudioSession!
+    /// Read and set the current AVPlayer volume, a value of 0.0 indicates silence; a value of 1.0 indicates full audio volume for the player instance.
+    open var volume: Float? {
+        get {
+            return player?.volume
+        }
+        set {
+            guard
+                let newValue = newValue,
+                0.0...1.0 ~= newValue else { return }
+            player?.volume = newValue
+        }
+    }
     
     /// Player current state of type `FRadioPlayerState`
     open private(set) var state = FRadioPlayerState.urlNotSet {
@@ -229,15 +240,14 @@ open class FRadioPlayer: NSObject {
 
         // Enable bluetooth playback
         #if os(iOS)
-        options = [.defaultToSpeaker, .allowBluetooth]
+        options = [.defaultToSpeaker, .allowBluetooth, .allowAirPlay]
         #else
         options = []
         #endif
 
         // Start audio session
-        audioSession = AVAudioSession.sharedInstance()
-        try? audioSession.setCategory(AVAudioSession.Category.playback, mode: AVAudioSession.Mode.default, policy: .longForm, options: options)
-        try? audioSession.setActive(true, options: .notifyOthersOnDeactivation)
+        let audioSession = AVAudioSession.sharedInstance()
+        try? audioSession.setCategory(AVAudioSession.Category.playback, mode: AVAudioSession.Mode.default, options: options)
         #endif
 
         // Notifications
@@ -261,14 +271,13 @@ open class FRadioPlayer: NSObject {
      
      */
     open func play() {
-        state = .loading // APEATLING MODIFICATION
-        
         guard let player = player else { return }
         if player.currentItem == nil, playerItem != nil {
             player.replaceCurrentItem(with: playerItem)
         }
         
         player.play()
+        playbackState = .playing
     }
     
     /**
@@ -278,6 +287,7 @@ open class FRadioPlayer: NSObject {
     open func pause() {
         guard let player = player else { return }
         player.pause()
+        playbackState = .paused
     }
     
     /**
@@ -286,9 +296,9 @@ open class FRadioPlayer: NSObject {
      */
     open func stop() {
         guard let player = player else { return }
+        playbackState = .stopped
         player.replaceCurrentItem(with: nil)
         timedMetadataDidChange(rawValue: nil)
-        playbackState = .stopped
     }
     
     /**
@@ -320,7 +330,8 @@ open class FRadioPlayer: NSObject {
     private func setupPlayer(with asset: AVAsset) {
         if player == nil {
             player = AVPlayer()
-            player?.addObserver(self, forKeyPath: "timeControlStatus", options: NSKeyValueObservingOptions.new, context: nil)
+            // Removes black screen when connecting to appleTV
+            player?.allowsExternalPlayback = false
         }
         
         playerItem = AVPlayerItem(asset: asset)
@@ -401,7 +412,7 @@ open class FRadioPlayer: NSObject {
             return
         }
         
-        FRadioAPI.getArtwork(for: rawValue, size: artworkSize, completionHandler: { [unowned self] artworlURL in
+        FRadioAPI.getArtwork(for: rawValue as String, size: artworkSize, completionHandler: { [unowned self] artworlURL in
             DispatchQueue.main.async {
                 self.delegate?.radioPlayer?(self, artworkDidChange: artworlURL)
             }
@@ -423,7 +434,6 @@ open class FRadioPlayer: NSObject {
     deinit {
         resetPlayer()
         NotificationCenter.default.removeObserver(self)
-        player?.removeObserver(self, forKeyPath: "timeControlStatus")
     }
     
     // MARK: - Notifications
@@ -452,6 +462,8 @@ open class FRadioPlayer: NSObject {
             guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { break }
             let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
             DispatchQueue.main.async { options.contains(.shouldResume) ? self.play() : self.pause() }
+        @unknown default:
+            break
         }
         #endif
     }
@@ -542,24 +554,9 @@ open class FRadioPlayer: NSObject {
             case "timedMetadata":
                 let rawValue = item.timedMetadata?.first?.value as? String
                 timedMetadataDidChange(rawValue: rawValue)
-
+                
             default:
                 break
-            }
-        }
-        
-        // APEATLING MODIFICATION
-        if let keyPath = keyPath {
-            switch keyPath {
-                case "timeControlStatus":
-                    if player?.timeControlStatus == AVPlayer.TimeControlStatus.playing {
-                        playbackState = .playing
-                    } else if player?.timeControlStatus == AVPlayer.TimeControlStatus.paused {
-                        playbackState = .paused
-                    }
-                
-                default:
-                    break
             }
         }
     }

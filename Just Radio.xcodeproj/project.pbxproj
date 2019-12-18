@@ -24,6 +24,7 @@
 		BA113C7E218FB12900AAADA3 /* RadioTimeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA113C7C218FB12900AAADA3 /* RadioTimeHelper.swift */; };
 		BA113C7F218FB12900AAADA3 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA113C7D218FB12900AAADA3 /* DataManager.swift */; };
 		BA2D1AD121CF075C0093D04E /* FRadioPlayer+getCurrentRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA2D1AD021CF075C0093D04E /* FRadioPlayer+getCurrentRoute.swift */; };
+		BA3D8D3123A9D442002EB482 /* UISpringyButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA3D8D3023A9D442002EB482 /* UISpringyButton.swift */; };
 		BA4D7E2321A61FF000DED6FC /* NVActivityIndicatorAnimationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4D7DF921A61FF000DED6FC /* NVActivityIndicatorAnimationDelegate.swift */; };
 		BA4D7E2421A61FF000DED6FC /* NVActivityIndicatorPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4D7DFB21A61FF000DED6FC /* NVActivityIndicatorPresenter.swift */; };
 		BA4D7E2521A61FF000DED6FC /* NVActivityIndicatorViewable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4D7DFC21A61FF000DED6FC /* NVActivityIndicatorViewable.swift */; };
@@ -65,7 +66,6 @@
 		BA4D7E4F21A73AB600DED6FC /* UIView+AddBorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4D7E4E21A73AB600DED6FC /* UIView+AddBorder.swift */; };
 		BA6BD81721C46BF50046DCA4 /* Array+RemovingDuplicates.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6BD81621C46BF50046DCA4 /* Array+RemovingDuplicates.swift */; };
 		BA6BD81921C5B5420046DCA4 /* StationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6BD81821C5B5420046DCA4 /* StationHelper.swift */; };
-		BA6BD81B21C70FFA0046DCA4 /* UISpringyButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6BD81A21C70FFA0046DCA4 /* UISpringyButton.swift */; };
 		BA85238721D197C7006BF09E /* UIPlayPauseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA85238621D197C7006BF09E /* UIPlayPauseButton.swift */; };
 		BABC116B2192A00500EDE169 /* FloatingPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABC11602192A00400EDE169 /* FloatingPanel.swift */; };
 		BABC116C2192A00500EDE169 /* FloatingPanelBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABC11612192A00500EDE169 /* FloatingPanelBehavior.swift */; };
@@ -135,6 +135,7 @@
 		BA113C7C218FB12900AAADA3 /* RadioTimeHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadioTimeHelper.swift; sourceTree = "<group>"; };
 		BA113C7D218FB12900AAADA3 /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		BA2D1AD021CF075C0093D04E /* FRadioPlayer+getCurrentRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FRadioPlayer+getCurrentRoute.swift"; sourceTree = "<group>"; };
+		BA3D8D3023A9D442002EB482 /* UISpringyButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UISpringyButton.swift; sourceTree = "<group>"; };
 		BA4D7DF921A61FF000DED6FC /* NVActivityIndicatorAnimationDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NVActivityIndicatorAnimationDelegate.swift; sourceTree = "<group>"; };
 		BA4D7DFB21A61FF000DED6FC /* NVActivityIndicatorPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NVActivityIndicatorPresenter.swift; sourceTree = "<group>"; };
 		BA4D7DFC21A61FF000DED6FC /* NVActivityIndicatorViewable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NVActivityIndicatorViewable.swift; sourceTree = "<group>"; };
@@ -178,7 +179,6 @@
 		BA4D7E4E21A73AB600DED6FC /* UIView+AddBorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+AddBorder.swift"; sourceTree = "<group>"; };
 		BA6BD81621C46BF50046DCA4 /* Array+RemovingDuplicates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+RemovingDuplicates.swift"; sourceTree = "<group>"; };
 		BA6BD81821C5B5420046DCA4 /* StationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationHelper.swift; sourceTree = "<group>"; };
-		BA6BD81A21C70FFA0046DCA4 /* UISpringyButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UISpringyButton.swift; sourceTree = "<group>"; };
 		BA85238621D197C7006BF09E /* UIPlayPauseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIPlayPauseButton.swift; sourceTree = "<group>"; };
 		BABC11602192A00400EDE169 /* FloatingPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatingPanel.swift; sourceTree = "<group>"; };
 		BABC11612192A00500EDE169 /* FloatingPanelBehavior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloatingPanelBehavior.swift; sourceTree = "<group>"; };
@@ -336,8 +336,8 @@
 				BA113C7A218FB0A500AAADA3 /* ImageLoader.swift */,
 				BACA0B9B219CE11D007C6057 /* MarqueeLabel.swift */,
 				BACA0B93219A5042007C6057 /* UIImageColors.swift */,
+				BA3D8D3023A9D442002EB482 /* UISpringyButton.swift */,
 				BA113C7C218FB12900AAADA3 /* RadioTimeHelper.swift */,
-				BA6BD81A21C70FFA0046DCA4 /* UISpringyButton.swift */,
 				BA85238621D197C7006BF09E /* UIPlayPauseButton.swift */,
 			);
 			path = Libraries;
@@ -571,6 +571,7 @@
 				TargetAttributes = {
 					BA113C32218FA2DC00AAADA3 = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1130;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -579,10 +580,12 @@
 					};
 					BA113C46218FA2DF00AAADA3 = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1130;
 						TestTargetID = BA113C32218FA2DC00AAADA3;
 					};
 					BA113C51218FA2DF00AAADA3 = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1130;
 						TestTargetID = BA113C32218FA2DC00AAADA3;
 					};
 				};
@@ -665,7 +668,6 @@
 				BABC116B2192A00500EDE169 /* FloatingPanel.swift in Sources */,
 				BABC11732192A00500EDE169 /* FloatingPanelSurfaceView.swift in Sources */,
 				BAF9C467218FB2DF004BC248 /* DirbleStationProviderStrategy.swift in Sources */,
-				BA6BD81B21C70FFA0046DCA4 /* UISpringyButton.swift in Sources */,
 				BABC116C2192A00500EDE169 /* FloatingPanelBehavior.swift in Sources */,
 				BA4D7E2D21A61FF000DED6FC /* NVActivityIndicatorAnimationBallTrianglePath.swift in Sources */,
 				BACA0BA521A3D2FC007C6057 /* Bar.swift in Sources */,
@@ -680,6 +682,7 @@
 				BA4D7E3921A61FF000DED6FC /* NVActivityIndicatorAnimationBallPulse.swift in Sources */,
 				BA4D7E3021A61FF000DED6FC /* NVActivityIndicatorAnimationBallZigZagDeflect.swift in Sources */,
 				BA4D7E4121A61FF000DED6FC /* NVActivityIndicatorAnimationBallScaleRippleMultiple.swift in Sources */,
+				BA3D8D3123A9D442002EB482 /* UISpringyButton.swift in Sources */,
 				BA4D7E4921A61FF000DED6FC /* NVActivityIndicatorAnimationOrbit.swift in Sources */,
 				BA4D7E2921A61FF000DED6FC /* NVActivityIndicatorAnimationBallRotate.swift in Sources */,
 				BACA0BA721A3D2FC007C6057 /* DoubleExtension.swift in Sources */,
@@ -902,7 +905,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.apeatling.Just-Radio";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -920,7 +923,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.apeatling.Just-Radio";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -940,7 +943,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.apeatling.Just-RadioTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Just Radio.app/Just Radio";
 			};
@@ -961,7 +964,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.apeatling.Just-RadioTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Just Radio.app/Just Radio";
 			};
@@ -981,7 +984,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.apeatling.Just-RadioUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = "Just Radio";
 			};
@@ -1001,7 +1004,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.apeatling.Just-RadioUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = "Just Radio";
 			};

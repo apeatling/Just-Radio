@@ -72,7 +72,7 @@ class StationsViewController: UIViewController {
         tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: 1, height: 11))
         
         searchBarContainerView.addBorder([.bottom], color: UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.1), width: 0.5)
-        let textField = searchBar.value(forKey: "_searchField") as! UITextField
+        let textField = searchBar.searchTextField
             textField.font = UIFont.systemFont(ofSize: 17)
         
         nowPlayingVC.delegate = self
