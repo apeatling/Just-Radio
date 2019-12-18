@@ -1,4 +1,4 @@
-# Just-Radio
+# Just Radio iOS App
 
 ![Just Radio](https://cldup.com/VMQRlAcAfZ.png "Just Radio")
 
